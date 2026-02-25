@@ -1,0 +1,17 @@
+# Build
+build/
+
+# SDK (too large for git, keep local)
+PTSL_SDK_CPP.2025.10.0.1267955/
+
+# Knowledge base files (large)
+*_SDK_KNOWLEDGE.md
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+compile_commands.json
+.cache/
