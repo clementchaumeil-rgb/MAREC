@@ -60,8 +60,10 @@ json PtslCommands::fetchAllPaginated(int32_t commandId, const json& baseRequest,
 
         // Check if we got all items
         int total = 0;
-        if (resp.contains("pagination_response")) {
-            total = resp["pagination_response"].value("total", 0);
+        if (resp.contains("pagination_response") &&
+            resp["pagination_response"].contains("total") &&
+            resp["pagination_response"]["total"].is_number()) {
+            total = resp["pagination_response"]["total"].get<int>();
         }
 
         offset += pageSize;
@@ -104,6 +106,16 @@ SessionInfo PtslCommands::getSessionInfo()
     return info;
 }
 
+std::string PtslCommands::getSessionPath()
+{
+    auto resp = sendAndParse(static_cast<int32_t>(CommandId::CId_GetSessionPath));
+    // Response format: {"session_path": {"info": {...}, "path": "/path/to/Session.ptx"}}
+    if (resp.contains("session_path") && resp["session_path"].contains("path")) {
+        return resp["session_path"]["path"].get<std::string>();
+    }
+    return "";
+}
+
 // ---- Track operations ----
 
 std::vector<TrackInfo> PtslCommands::getTrackList()
@@ -116,9 +128,9 @@ std::vector<TrackInfo> PtslCommands::getTrackList()
 
     for (const auto& t : allTracks) {
         TrackInfo info;
-        info.name = t.value("name", "");
-        info.id = t.value("id", "");
-        info.index = t.value("index", 0);
+        info.name = t.contains("name") && t["name"].is_string() ? t["name"].get<std::string>() : "";
+        info.id = t.contains("id") && t["id"].is_string() ? t["id"].get<std::string>() : "";
+        info.index = t.contains("index") && t["index"].is_number() ? t["index"].get<int32_t>() : 0;
 
         // type can be an int or a string enum
         if (t.contains("type")) {
@@ -166,9 +178,9 @@ std::vector<Marker> PtslCommands::getMemoryLocations()
 
     for (const auto& ml : allLocs) {
         Marker m;
-        m.number = ml.value("number", 0);
-        m.name = ml.value("name", "");
-        m.startTime = ml.value("start_time", "");
+        m.number = ml.contains("number") && ml["number"].is_number() ? ml["number"].get<int32_t>() : 0;
+        m.name = ml.contains("name") && ml["name"].is_string() ? ml["name"].get<std::string>() : "";
+        m.startTime = ml.contains("start_time") && ml["start_time"].is_string() ? ml["start_time"].get<std::string>() : "";
 
         // time_properties can be int or string
         if (ml.contains("time_properties")) {
@@ -335,7 +347,7 @@ std::vector<PlaylistElement> PtslCommands::getPlaylistElements(
 
 // ---- Renaming ----
 
-bool PtslCommands::renameTargetClip(const std::string& oldName, const std::string& newName, bool renameFile)
+RenameOutcome PtslCommands::renameTargetClip(const std::string& oldName, const std::string& newName, bool renameFile)
 {
     json req;
     req["clip_name"] = oldName;
@@ -344,10 +356,10 @@ bool PtslCommands::renameTargetClip(const std::string& oldName, const std::strin
 
     try {
         sendAndParse(static_cast<int32_t>(CommandId::CId_RenameTargetClip), req);
-        return true;
+        return {true, ""};
     } catch (const std::exception& e) {
         std::cerr << "  Warning: Failed to rename '" << oldName << "' -> '" << newName << "': " << e.what() << "\n";
-        return false;
+        return {false, e.what()};
     }
 }
 
@@ -372,25 +384,23 @@ bool PtslCommands::exportClipsAsFiles(const ExportConfig& config)
     json req;
     req["file_path"] = config.outputDir;
 
-    // Map format string to proto enum
-    if (config.fileType == "wav") {
-        req["file_type"] = "EFType_WAV";
-    } else if (config.fileType == "aiff") {
-        req["file_type"] = "EFType_AIFF";
+    // Map format string to PTSL enum (use legacy names for compatibility)
+    if (config.fileType == "aiff") {
+        req["file_type"] = "AIFF";
     } else {
-        req["file_type"] = "EFType_WAV";
+        req["file_type"] = "WAV";
     }
 
-    // Export format: mono by default
-    req["format"] = "EFormat_Mono";
+    // Export format: interleaved by default (mono unsupported on some PT versions)
+    req["format"] = "EF_Interleaved";
 
-    // Bit depth
+    // Bit depth (use legacy names: Bit16, Bit24, Bit32Float)
     if (config.bitDepth == 16) {
-        req["bit_depth"] = "BDepth_16";
+        req["bit_depth"] = "Bit16";
     } else if (config.bitDepth == 32) {
-        req["bit_depth"] = "BDepth_32";
+        req["bit_depth"] = "Bit32Float";
     } else {
-        req["bit_depth"] = "BDepth_24";
+        req["bit_depth"] = "Bit24";
     }
 
     try {
@@ -422,6 +432,175 @@ std::optional<int64_t> PtslCommands::convertTimeToSamples(
     }
 
     return std::nullopt;
+}
+
+// ---- Session management ----
+
+void PtslCommands::createSession(const std::string& name, const std::string& location,
+    int32_t sampleRate, int32_t bitDepth)
+{
+    json req;
+    req["session_name"] = name;
+    req["session_location"] = location;
+    req["file_type"] = "FT_WAVE";
+    req["is_interleaved"] = false;
+    req["is_cloud_project"] = false;
+    req["create_from_template"] = false;
+    req["input_output_settings"] = "IO_Last";
+
+    switch (sampleRate) {
+        case 44100:  req["sample_rate"] = "SR_44100";  break;
+        case 88200:  req["sample_rate"] = "SR_88200";  break;
+        case 96000:  req["sample_rate"] = "SR_96000";  break;
+        case 176400: req["sample_rate"] = "SR_176400"; break;
+        case 192000: req["sample_rate"] = "SR_192000"; break;
+        default:     req["sample_rate"] = "SR_48000";  break;
+    }
+
+    switch (bitDepth) {
+        case 16: req["bit_depth"] = "Bit16"; break;
+        case 32: req["bit_depth"] = "Bit32"; break;
+        default: req["bit_depth"] = "Bit24"; break;
+    }
+
+    sendAndParse(static_cast<int32_t>(CommandId::CId_CreateSession), req);
+}
+
+void PtslCommands::closeSession(bool saveOnClose)
+{
+    json req;
+    req["save_on_close"] = saveOnClose;
+    sendAndParse(static_cast<int32_t>(CommandId::CId_CloseSession), req);
+}
+
+void PtslCommands::saveSession()
+{
+    sendAndParse(static_cast<int32_t>(CommandId::CId_SaveSession));
+}
+
+// ---- Track / Marker / Clip creation ----
+
+std::vector<std::string> PtslCommands::createNewTracks(const std::string& baseName, int count)
+{
+    json req;
+    req["number_of_tracks"] = count;
+    req["track_name"] = baseName;
+    req["track_format"] = "TFormat_Mono";
+    req["track_type"] = "TType_Audio";
+    req["track_timebase"] = "TTimebase_Samples";
+
+    auto resp = sendAndParse(static_cast<int32_t>(CommandId::CId_CreateNewTracks), req);
+
+    std::vector<std::string> names;
+    if (resp.contains("created_track_names") && resp["created_track_names"].is_array()) {
+        for (const auto& n : resp["created_track_names"]) {
+            names.push_back(n.get<std::string>());
+        }
+    }
+    return names;
+}
+
+void PtslCommands::createMemoryLocation(int32_t number, const std::string& name,
+    int64_t startSamples)
+{
+    // Convert sample position to the session's current counter format
+    std::string timeStr = convertSamplesToSessionFormat(startSamples);
+
+    json req;
+    req["number"] = number;
+    req["name"] = name;
+    req["start_time"] = timeStr;
+    req["time_properties"] = "TProperties_Marker";
+    req["location"] = "MarkerLocation_MainRuler";
+
+    sendAndParse(static_cast<int32_t>(CommandId::CId_CreateMemoryLocation), req);
+}
+
+std::string PtslCommands::convertSamplesToSessionFormat(int64_t samples)
+{
+    // Use GetTimeAsType to convert from samples to the session's main counter format
+    json req;
+    req["location"] = {
+        {"location", std::to_string(samples)},
+        {"time_type", "TLType_Samples"}
+    };
+    // Convert to the main counter format — pass empty time_type to get session default
+    // Actually, we need to know the current counter format. Let's get it first.
+    try {
+        auto fmtResp = sendAndParse(static_cast<int32_t>(CommandId::CId_GetMainCounterFormat));
+        std::string currentFormat = fmtResp.value("current_type",
+            fmtResp.value("current_setting", ""));
+
+        // Now convert samples → current format
+        json convReq;
+        convReq["location"] = {
+            {"location", std::to_string(samples)},
+            {"time_type", "TLType_Samples"}
+        };
+        convReq["time_type"] = currentFormat;
+
+        auto convResp = sendAndParse(static_cast<int32_t>(CommandId::CId_GetTimeAsType), convReq);
+        if (convResp.contains("converted_location") &&
+            convResp["converted_location"].contains("location")) {
+            return convResp["converted_location"]["location"].get<std::string>();
+        }
+    } catch (...) {
+        // Fall through to raw samples
+    }
+
+    // Fallback: return raw samples string (works if counter is set to samples)
+    return std::to_string(samples);
+}
+
+void PtslCommands::importAudioToClipList(const std::vector<std::string>& filePaths)
+{
+    json req;
+    req["file_list"] = filePaths;
+    req["audio_operations"] = "AOperations_CopyAudio";
+
+    sendAndParse(static_cast<int32_t>(CommandId::CId_ImportAudioToClipList), req);
+}
+
+void PtslCommands::spotClipByID(const std::string& clipId, const std::string& trackName,
+    int64_t locationSamples)
+{
+    json req;
+    req["src_clips"] = json::array({clipId});
+    req["dst_track_name"] = trackName;
+    req["dst_location_data"] = {
+        {"location_type", "SLType_Start"},
+        {"location", {
+            {"time_type", "TLType_Samples"},
+            {"location", std::to_string(locationSamples)}
+        }}
+    };
+
+    sendAndParse(static_cast<int32_t>(CommandId::CId_SpotClipsByID), req);
+}
+
+// ---- Counter format ----
+
+void PtslCommands::setMainCounterFormat(const std::string& format)
+{
+    // Try the new location_type field (2025.06+) first, then fall back to deprecated time_scale
+    static const std::vector<std::pair<std::string, std::string>> attempts = {
+        {"location_type", "TLType_Samples"},
+        {"time_scale", "Samples"},
+        {"time_scale", "TOOptions_Samples"},
+    };
+
+    std::string lastError;
+    for (const auto& [field, value] : attempts) {
+        try {
+            json req;
+            req[field] = value;
+            sendAndParse(static_cast<int32_t>(CommandId::CId_SetMainCounterFormat), req);
+            return; // Success
+        } catch (const std::exception& e) {
+            lastError = e.what();
+        }
+    }
+    throw std::runtime_error("SetMainCounterFormat failed (all attempts): " + lastError);
 }
 
 } // namespace marec

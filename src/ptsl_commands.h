@@ -20,6 +20,7 @@ public:
 
     // Session info
     SessionInfo getSessionInfo();
+    std::string getSessionPath();
 
     // Track operations
     std::vector<TrackInfo> getTrackList();
@@ -39,7 +40,7 @@ public:
         const std::vector<ClipInfo>& clipLookup);
 
     // Renaming
-    bool renameTargetClip(const std::string& oldName, const std::string& newName, bool renameFile);
+    RenameOutcome renameTargetClip(const std::string& oldName, const std::string& newName, bool renameFile);
 
     // Selection & export
     bool selectAllClipsOnTrack(const std::string& trackName);
@@ -47,6 +48,23 @@ public:
 
     // Time conversion via PTSL
     std::optional<int64_t> convertTimeToSamples(const std::string& location, const std::string& timeType);
+
+    // --- Session management (for test harness) ---
+    void createSession(const std::string& name, const std::string& location,
+        int32_t sampleRate = 48000, int32_t bitDepth = 24);
+    void closeSession(bool saveOnClose = false);
+    void saveSession();
+
+    // --- Track / Marker / Clip creation ---
+    std::vector<std::string> createNewTracks(const std::string& baseName, int count = 1);
+    void createMemoryLocation(int32_t number, const std::string& name, int64_t startSamples);
+    // Convert a sample position to the session's current counter format string
+    std::string convertSamplesToSessionFormat(int64_t samples);
+    void importAudioToClipList(const std::vector<std::string>& filePaths);
+    void spotClipByID(const std::string& clipId, const std::string& trackName, int64_t locationSamples);
+
+    // --- Counter format ---
+    void setMainCounterFormat(const std::string& format);
 
 private:
     PTSLC_CPP::CppPTSLClient& m_client;

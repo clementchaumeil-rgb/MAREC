@@ -1,0 +1,600 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA000001 /* MARECApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000001; };
+		AA000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000002; };
+		AA000003 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003; };
+		AA000004 /* MarecModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004; };
+		AA000005 /* MarecCLIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005; };
+		AA000006 /* MarecViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006; };
+		AA000007 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007; };
+		AA000008 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008; };
+		AA000009 /* TrackSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009; };
+		AA000010 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010; };
+		AA000011 /* ExecutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000011; };
+		AA000012 /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000012; };
+		AA000013 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000013; };
+		AA000014 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015; };
+		AA000015 /* CollapsibleSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016; };
+		AA000016 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017; };
+		AA000017 /* AccessibilityID.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
+		AA100001 /* AccessibilityID.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
+		AA100002 /* TestHarnessHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100001; };
+		AA100003 /* MARECUITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100002; };
+		AA100004 /* BasicRenameUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100003; };
+		AA100005 /* DuplicatesUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100004; };
+		AA100006 /* BeforeFirstMarkerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100005; };
+		AA100007 /* AlreadyCorrectUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100006; };
+		AA100008 /* MultiTrackUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100007; };
+		AA100009 /* EmptySessionUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100008; };
+		AA100010 /* NoMarkersUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100009; };
+		AA100011 /* NavigationUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100010; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AG000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE000099 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE000001;
+			remoteInfo = MAREC;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AB000001 /* MARECApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MARECApp.swift; sourceTree = "<group>"; };
+		AB000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AB000003 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		AB000004 /* MarecModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarecModels.swift; sourceTree = "<group>"; };
+		AB000005 /* MarecCLIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarecCLIService.swift; sourceTree = "<group>"; };
+		AB000006 /* MarecViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarecViewModel.swift; sourceTree = "<group>"; };
+		AB000007 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		AB000008 /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
+		AB000009 /* TrackSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectionView.swift; sourceTree = "<group>"; };
+		AB000010 /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		AB000011 /* ExecutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionView.swift; sourceTree = "<group>"; };
+		AB000012 /* ResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
+		AB000013 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AB000014 /* MAREC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MAREC.entitlements; sourceTree = "<group>"; };
+		AB000015 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		AB000016 /* CollapsibleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSection.swift; sourceTree = "<group>"; };
+		AB000017 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		AB000018 /* AccessibilityID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityID.swift; sourceTree = "<group>"; };
+		AB000099 /* MAREC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAREC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB100001 /* TestHarnessHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHarnessHelper.swift; sourceTree = "<group>"; };
+		AB100002 /* MARECUITestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MARECUITestBase.swift; sourceTree = "<group>"; };
+		AB100003 /* BasicRenameUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicRenameUITest.swift; sourceTree = "<group>"; };
+		AB100004 /* DuplicatesUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicatesUITest.swift; sourceTree = "<group>"; };
+		AB100005 /* BeforeFirstMarkerUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeFirstMarkerUITest.swift; sourceTree = "<group>"; };
+		AB100006 /* AlreadyCorrectUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlreadyCorrectUITest.swift; sourceTree = "<group>"; };
+		AB100007 /* MultiTrackUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiTrackUITest.swift; sourceTree = "<group>"; };
+		AB100008 /* EmptySessionUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptySessionUITest.swift; sourceTree = "<group>"; };
+		AB100009 /* NoMarkersUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoMarkersUITest.swift; sourceTree = "<group>"; };
+		AB100010 /* NavigationUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUITest.swift; sourceTree = "<group>"; };
+		AB100099 /* MARECUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MARECUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AC000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AC100001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AD000001 = {
+			isa = PBXGroup;
+			children = (
+				AD000002 /* MAREC */,
+				AD100001 /* MARECUITests */,
+				AD000099 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AD000002 /* MAREC */ = {
+			isa = PBXGroup;
+			children = (
+				AD000003 /* App */,
+				AD000004 /* Models */,
+				AD000005 /* Services */,
+				AD000006 /* ViewModels */,
+				AD000007 /* Views */,
+				AD000008 /* Theme */,
+				AD000009 /* Resources */,
+				AB000014 /* MAREC.entitlements */,
+			);
+			path = MAREC;
+			sourceTree = "<group>";
+		};
+		AD000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AB000001 /* MARECApp.swift */,
+				AB000002 /* ContentView.swift */,
+				AB000018 /* AccessibilityID.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AD000004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AB000003 /* AppState.swift */,
+				AB000004 /* MarecModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AD000005 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AB000005 /* MarecCLIService.swift */,
+				AB000017 /* Logger.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		AD000006 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				AB000006 /* MarecViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		AD000007 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AD000010 /* Components */,
+				AB000008 /* ConnectionView.swift */,
+				AB000009 /* TrackSelectionView.swift */,
+				AB000010 /* PreviewView.swift */,
+				AB000011 /* ExecutionView.swift */,
+				AB000012 /* ResultsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AD000010 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AB000015 /* SearchBar.swift */,
+				AB000016 /* CollapsibleSection.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AD000008 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				AB000007 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		AD000009 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AB000013 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AD000099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AB000099 /* MAREC.app */,
+				AB100099 /* MARECUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AD100001 /* MARECUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AB100001 /* TestHarnessHelper.swift */,
+				AB100002 /* MARECUITestBase.swift */,
+				AB100003 /* BasicRenameUITest.swift */,
+				AB100004 /* DuplicatesUITest.swift */,
+				AB100005 /* BeforeFirstMarkerUITest.swift */,
+				AB100006 /* AlreadyCorrectUITest.swift */,
+				AB100007 /* MultiTrackUITest.swift */,
+				AB100008 /* EmptySessionUITest.swift */,
+				AB100009 /* NoMarkersUITest.swift */,
+				AB100010 /* NavigationUITest.swift */,
+			);
+			path = MARECUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AE000001 /* MAREC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF000003 /* Build configuration list for PBXNativeTarget "MAREC" */;
+			buildPhases = (
+				AE000002 /* Sources */,
+				AC000001 /* Frameworks */,
+				AE000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MAREC;
+			productName = MAREC;
+			productReference = AB000099 /* MAREC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AE100001 /* MARECUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF100003 /* Build configuration list for PBXNativeTarget "MARECUITests" */;
+			buildPhases = (
+				AE100002 /* Sources */,
+				AC100001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AH000001 /* PBXTargetDependency */,
+			);
+			name = MARECUITests;
+			productName = MARECUITests;
+			productReference = AB100099 /* MARECUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AE000099 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					AE000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					AE100001 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = AE000001;
+					};
+				};
+			};
+			buildConfigurationList = AF000001 /* Build configuration list for PBXProject "MAREC" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				fr,
+				Base,
+			);
+			mainGroup = AD000001;
+			productRefGroup = AD000099 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AE000001 /* MAREC */,
+				AE100001 /* MARECUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000013 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AE000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001 /* MARECApp.swift in Sources */,
+				AA000002 /* ContentView.swift in Sources */,
+				AA000003 /* AppState.swift in Sources */,
+				AA000004 /* MarecModels.swift in Sources */,
+				AA000005 /* MarecCLIService.swift in Sources */,
+				AA000006 /* MarecViewModel.swift in Sources */,
+				AA000007 /* Theme.swift in Sources */,
+				AA000008 /* ConnectionView.swift in Sources */,
+				AA000009 /* TrackSelectionView.swift in Sources */,
+				AA000010 /* PreviewView.swift in Sources */,
+				AA000011 /* ExecutionView.swift in Sources */,
+				AA000012 /* ResultsView.swift in Sources */,
+				AA000014 /* SearchBar.swift in Sources */,
+				AA000015 /* CollapsibleSection.swift in Sources */,
+				AA000016 /* Logger.swift in Sources */,
+				AA000017 /* AccessibilityID.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE100002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA100001 /* AccessibilityID.swift in Sources */,
+				AA100002 /* TestHarnessHelper.swift in Sources */,
+				AA100003 /* MARECUITestBase.swift in Sources */,
+				AA100004 /* BasicRenameUITest.swift in Sources */,
+				AA100005 /* DuplicatesUITest.swift in Sources */,
+				AA100006 /* BeforeFirstMarkerUITest.swift in Sources */,
+				AA100007 /* AlreadyCorrectUITest.swift in Sources */,
+				AA100008 /* MultiTrackUITest.swift in Sources */,
+				AA100009 /* EmptySessionUITest.swift in Sources */,
+				AA100010 /* NoMarkersUITest.swift in Sources */,
+				AA100011 /* NavigationUITest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AH000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE000001 /* MAREC */;
+			targetProxy = AG000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AF000010 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AF000011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AF000020 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MAREC/MAREC.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2025 Audi'Art — Groupe Auditorium Artistique";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiart.MAREC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AF000021 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MAREC/MAREC.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2025 Audi'Art — Groupe Auditorium Artistique";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiart.MAREC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AF100020 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiart.MARECUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MAREC;
+			};
+			name = Debug;
+		};
+		AF100021 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiart.MARECUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MAREC;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AF000001 /* Build configuration list for PBXProject "MAREC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF000010 /* Debug */,
+				AF000011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF000003 /* Build configuration list for PBXNativeTarget "MAREC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF000020 /* Debug */,
+				AF000021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF100003 /* Build configuration list for PBXNativeTarget "MARECUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF100020 /* Debug */,
+				AF100021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = AE000099 /* Project object */;
+}

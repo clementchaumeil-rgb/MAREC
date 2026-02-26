@@ -15,3 +15,13 @@ PTSL_SDK_CPP.2025.10.0.1267955/
 .idea/
 compile_commands.json
 .cache/
+
+# AAX SDK (large, keep local)
+aax-sdk-2-9-0/
+
+# Video files (large)
+video/
+
+# Xcode derived data
+gui/MAREC.xcodeproj/xcuserdata/
+gui/DerivedData/

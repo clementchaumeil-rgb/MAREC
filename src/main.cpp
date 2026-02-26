@@ -6,42 +6,40 @@
 #include "time_utils.h"
 #include "track_selector.h"
 
+#include <filesystem>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 using namespace marec;
+using json = nlohmann::json;
 
-// Resolve marker start times to samples using PTSL time conversion + local fallback.
+// ---- Helpers shared between interactive and JSON modes ----
+
 static void resolveMarkerTimes(
     std::vector<Marker>& markers, PtslCommands& commands, const SessionInfo& session)
 {
     for (auto& marker : markers) {
-        if (marker.startTime.empty()) {
-            continue;
-        }
+        if (marker.startTime.empty()) continue;
 
-        // Try PTSL GetTimeAsType first (handles all formats including bars|beats)
         auto samples = commands.convertTimeToSamples(marker.startTime, "TLType_Samples");
         if (samples) {
             marker.startSamples = *samples;
             continue;
         }
 
-        // Fallback: local parsing
         auto localSamples = TimeUtils::parseAuto(marker.startTime, session.sampleRate);
         if (localSamples) {
             marker.startSamples = *localSamples;
-        } else {
+        } else if (!marker.startTime.empty()) {
             std::cerr << "  Warning: Cannot resolve time for marker '" << marker.name
                       << "' (time: " << marker.startTime << "), skipping.\n";
         }
     }
 }
 
-// Get playlist elements for a track, with fallback to clip list.
 static std::vector<PlaylistElement> getTrackElements(
     PtslCommands& commands, const TrackInfo& track, const std::vector<ClipInfo>& clipList)
 {
-    // Primary: try GetTrackPlaylists + GetPlaylistElements
     try {
         auto playlists = commands.getTrackPlaylists(track.name);
         if (!playlists.empty()) {
@@ -52,9 +50,6 @@ static std::vector<PlaylistElement> getTrackElements(
                   << "', using clip list fallback. (" << e.what() << ")\n";
     }
 
-    // Fallback: use session clip list and match by clip positions
-    // Note: GetClipList returns media positions, not timeline positions.
-    // This is a limited fallback — positions may not map directly to timeline.
     std::vector<PlaylistElement> elements;
     for (const auto& clip : clipList) {
         PlaylistElement elem;
@@ -67,6 +62,287 @@ static std::vector<PlaylistElement> getTrackElements(
     return elements;
 }
 
+// Filter tracks by name list
+static std::vector<TrackInfo> filterTracksByNames(
+    const std::vector<TrackInfo>& allTracks, const std::vector<std::string>& names)
+{
+    if (names.empty()) return allTracks;
+    std::vector<TrackInfo> result;
+    for (const auto& track : allTracks) {
+        for (const auto& name : names) {
+            if (track.name == name) {
+                result.push_back(track);
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+// ---- JSON step functions ----
+
+static json doConnect(const CliOptions& /*opts*/)
+{
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    auto session = commands.getSessionInfo();
+
+    return {
+        {"status", "ok"},
+        {"session", {
+            {"sampleRate", session.sampleRate},
+            {"counterFormat", session.counterFormat}
+        }}
+    };
+}
+
+static json doTracks(const CliOptions& /*opts*/)
+{
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    auto audioTracks = commands.getAudioTracks();
+
+    json tracksJson = json::array();
+    for (const auto& t : audioTracks) {
+        tracksJson.push_back({
+            {"name", t.name},
+            {"id", t.id},
+            {"index", t.index}
+        });
+    }
+
+    return {{"status", "ok"}, {"tracks", tracksJson}};
+}
+
+static json doMarkers(const CliOptions& /*opts*/)
+{
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    auto session = commands.getSessionInfo();
+    auto markers = commands.getMarkers();
+    resolveMarkerTimes(markers, commands, session);
+
+    json markersJson = json::array();
+    for (const auto& m : markers) {
+        markersJson.push_back({
+            {"number", m.number},
+            {"name", m.name},
+            {"startTime", m.startTime},
+            {"startSamples", m.startSamples}
+        });
+    }
+
+    return {{"status", "ok"}, {"markers", markersJson}};
+}
+
+static json doPreview(const CliOptions& opts)
+{
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    auto session = commands.getSessionInfo();
+    auto audioTracks = commands.getAudioTracks();
+    auto selectedTracks = filterTracksByNames(audioTracks, opts.trackNames);
+
+    if (selectedTracks.empty() && opts.trackNames.empty()) {
+        selectedTracks = audioTracks; // Default: all tracks
+    }
+
+    auto markers = commands.getMarkers();
+    resolveMarkerTimes(markers, commands, session);
+
+    std::vector<ClipInfo> clipList;
+    try { clipList = commands.getClipList(); } catch (...) {}
+
+    json actionsJson = json::array();
+    int totalClips = 0;
+    int skippedBefore = 0;
+    int alreadyCorrect = 0;
+
+    for (const auto& track : selectedTracks) {
+        auto elements = getTrackElements(commands, track, clipList);
+        totalClips += static_cast<int>(elements.size());
+
+        auto result = MarkerMatcher::match(markers, elements);
+        skippedBefore += result.skippedBeforeFirstMarker;
+
+        for (const auto& action : result.actions) {
+            actionsJson.push_back({
+                {"trackName", track.name},
+                {"oldName", action.oldName},
+                {"newName", action.newName},
+                {"startSamples", action.startSamples},
+                {"timeFormatted", TimeUtils::formatSamplesToTime(action.startSamples, session.sampleRate)},
+                {"markerName", action.markerName}
+            });
+        }
+    }
+
+    alreadyCorrect = totalClips - static_cast<int>(actionsJson.size()) - skippedBefore;
+
+    return {
+        {"status", "ok"},
+        {"actions", actionsJson},
+        {"summary", {
+            {"totalClips", totalClips},
+            {"toRename", actionsJson.size()},
+            {"skippedBeforeFirstMarker", skippedBefore},
+            {"alreadyCorrect", alreadyCorrect}
+        }}
+    };
+}
+
+static json doRename(const CliOptions& opts)
+{
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    auto session = commands.getSessionInfo();
+    auto audioTracks = commands.getAudioTracks();
+    auto selectedTracks = filterTracksByNames(audioTracks, opts.trackNames);
+
+    if (selectedTracks.empty() && opts.trackNames.empty()) {
+        selectedTracks = audioTracks;
+    }
+
+    auto markers = commands.getMarkers();
+    resolveMarkerTimes(markers, commands, session);
+
+    std::vector<ClipInfo> clipList;
+    try { clipList = commands.getClipList(); } catch (...) {}
+
+    // Gather all rename actions
+    std::vector<RenameAction> allActions;
+    for (const auto& track : selectedTracks) {
+        auto elements = getTrackElements(commands, track, clipList);
+        auto result = MarkerMatcher::match(markers, elements);
+        for (auto& action : result.actions) {
+            allActions.push_back(std::move(action));
+        }
+    }
+
+    // Execute
+    json resultsJson = json::array();
+    int successCount = 0;
+    int errorCount = 0;
+
+    for (const auto& action : allActions) {
+        auto outcome = commands.renameTargetClip(action.oldName, action.newName, opts.renameFile);
+        json r = {
+            {"oldName", action.oldName},
+            {"newName", action.newName},
+            {"success", outcome.success}
+        };
+        if (!outcome.success) {
+            r["error"] = outcome.error.empty() ? "Rename failed" : outcome.error;
+            errorCount++;
+        } else {
+            successCount++;
+        }
+        resultsJson.push_back(r);
+    }
+
+    return {
+        {"status", "ok"},
+        {"results", resultsJson},
+        {"summary", {
+            {"successCount", successCount},
+            {"errorCount", errorCount},
+            {"totalCount", static_cast<int>(allActions.size())}
+        }}
+    };
+}
+
+static json doExport(const CliOptions& opts)
+{
+    namespace fs = std::filesystem;
+
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    // Resolve output directory: use session's parent dir if not specified
+    ExportConfig exportConfig = opts.exportConfig;
+    if (exportConfig.outputDir.empty()) {
+        std::string sessionPath = commands.getSessionPath();
+        if (!sessionPath.empty()) {
+            fs::path sessionDir = fs::path(sessionPath).parent_path();
+            exportConfig.outputDir = (sessionDir / "Bounced Files").string() + "/";
+            fs::create_directories(exportConfig.outputDir);
+        }
+    }
+
+    auto audioTracks = commands.getAudioTracks();
+    auto selectedTracks = filterTracksByNames(audioTracks, opts.trackNames);
+
+    if (selectedTracks.empty() && opts.trackNames.empty()) {
+        selectedTracks = audioTracks;
+    }
+
+    json resultsJson = json::array();
+    int successCount = 0;
+
+    for (const auto& track : selectedTracks) {
+        bool selected = commands.selectAllClipsOnTrack(track.name);
+        bool exported = selected && commands.exportClipsAsFiles(exportConfig);
+
+        resultsJson.push_back({
+            {"trackName", track.name},
+            {"success", exported}
+        });
+        if (exported) successCount++;
+    }
+
+    return {
+        {"status", "ok"},
+        {"results", resultsJson},
+        {"summary", {
+            {"exported", successCount},
+            {"total", static_cast<int>(selectedTracks.size())}
+        }}
+    };
+}
+
+// ---- JSON mode dispatcher ----
+
+static int runJsonMode(const CliOptions& opts)
+{
+    try {
+        json result;
+        switch (opts.step) {
+            case Step::Connect: result = doConnect(opts); break;
+            case Step::Tracks:  result = doTracks(opts); break;
+            case Step::Markers: result = doMarkers(opts); break;
+            case Step::Preview: result = doPreview(opts); break;
+            case Step::Rename:  result = doRename(opts); break;
+            case Step::Export:  result = doExport(opts); break;
+            default:
+                result = {{"status", "error"}, {"error", "Missing --step argument"}, {"code", "MISSING_STEP"}};
+                break;
+        }
+        std::cout << result.dump() << std::endl;
+        return result.value("status", "") == "ok" ? 0 : 1;
+    } catch (const std::exception& e) {
+        json err = {
+            {"status", "error"},
+            {"error", e.what()},
+            {"code", "PTSL_ERROR"}
+        };
+        std::cout << err.dump() << std::endl;
+        return 1;
+    }
+}
+
+// ---- Interactive mode (original) ----
+
 static void printPreview(const std::vector<RenameAction>& actions, const SessionInfo& session)
 {
     std::cout << "\n--- Rename Preview ---\n";
@@ -77,16 +353,9 @@ static void printPreview(const std::vector<RenameAction>& actions, const Session
     std::cout << "---\n";
 }
 
-int main(int argc, char* argv[])
+static int runInteractive(const CliOptions& opts)
 {
-    // 1. Parse CLI args
-    auto opts = Cli::parse(argc, argv);
-    if (opts.help) {
-        Cli::printHelp();
-        return 0;
-    }
-
-    // 2. Connect to Pro Tools
+    // 1. Connect to Pro Tools
     PtslConnection connection;
     try {
         connection.connect("AudiArt", "MAREC");
@@ -98,11 +367,11 @@ int main(int argc, char* argv[])
 
     PtslCommands commands(connection.client());
 
-    // 3. Get session info
+    // 2. Get session info
     auto session = commands.getSessionInfo();
     std::cout << "Session: " << session.sampleRate << " Hz\n";
 
-    // 4. Get audio tracks
+    // 3. Get audio tracks
     auto audioTracks = commands.getAudioTracks();
     if (audioTracks.empty()) {
         std::cerr << "Error: No audio tracks found in session.\n";
@@ -110,14 +379,14 @@ int main(int argc, char* argv[])
     }
     std::cout << "Found " << audioTracks.size() << " audio track(s).\n";
 
-    // 5. Track selection
+    // 4. Track selection
     auto selectedTracks = TrackSelector::selectInteractively(audioTracks, opts.allTracks);
     if (selectedTracks.empty()) {
         std::cout << "No tracks selected. Exiting.\n";
         return 0;
     }
 
-    // 6. Get markers (filtered to TP_Marker)
+    // 5. Get markers
     auto markers = commands.getMarkers();
     if (markers.empty()) {
         std::cerr << "Error: No markers found in session.\n";
@@ -125,10 +394,9 @@ int main(int argc, char* argv[])
     }
     std::cout << "Found " << markers.size() << " marker(s).\n";
 
-    // 7. Resolve marker times to samples
+    // 6. Resolve marker times
     resolveMarkerTimes(markers, commands, session);
 
-    // Count resolved
     int resolvedCount = 0;
     for (const auto& m : markers) {
         if (m.startSamples >= 0) resolvedCount++;
@@ -139,15 +407,14 @@ int main(int argc, char* argv[])
     }
     std::cout << "Resolved " << resolvedCount << "/" << markers.size() << " marker positions.\n";
 
-    // 8. Get session clip list (for clip ID resolution)
+    // 7. Get clip list
     std::vector<ClipInfo> clipList;
-    try {
-        clipList = commands.getClipList();
-    } catch (const std::exception& e) {
+    try { clipList = commands.getClipList(); }
+    catch (const std::exception& e) {
         std::cerr << "  Note: GetClipList not available. (" << e.what() << ")\n";
     }
 
-    // 9. Process each track
+    // 8. Process each track
     std::vector<RenameAction> allActions;
     int totalSkipped = 0;
 
@@ -174,7 +441,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    // 10. Show preview
+    // 9. Show preview
     printPreview(allActions, session);
     std::cout << allActions.size() << " clip(s) to rename";
     if (totalSkipped > 0) {
@@ -182,13 +449,13 @@ int main(int argc, char* argv[])
     }
     std::cout << ".\n";
 
-    // 11. Dry run check
+    // 10. Dry run check
     if (opts.dryRun) {
         std::cout << "\n[DRY RUN] No changes made.\n";
         return 0;
     }
 
-    // 12. Confirm with user
+    // 11. Confirm
     std::cout << "\nProceed with renaming? (y/N): ";
     std::string confirm;
     std::getline(std::cin, confirm);
@@ -197,12 +464,12 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    // 13. Execute renaming
+    // 12. Execute
     int successCount = 0;
     int errorCount = 0;
-
     for (const auto& action : allActions) {
-        if (commands.renameTargetClip(action.oldName, action.newName, opts.renameFile)) {
+        auto outcome = commands.renameTargetClip(action.oldName, action.newName, opts.renameFile);
+        if (outcome.success) {
             successCount++;
         } else {
             errorCount++;
@@ -215,7 +482,7 @@ int main(int argc, char* argv[])
     }
     std::cout << ".\n";
 
-    // 14. Export if requested
+    // 13. Export
     if (opts.exportConfig.enabled) {
         std::cout << "\nExporting clips...\n";
         for (const auto& track : selectedTracks) {
@@ -230,4 +497,21 @@ int main(int argc, char* argv[])
     }
 
     return 0;
+}
+
+// ---- Entry point ----
+
+int main(int argc, char* argv[])
+{
+    auto opts = Cli::parse(argc, argv);
+    if (opts.help) {
+        Cli::printHelp();
+        return 0;
+    }
+
+    if (opts.jsonMode) {
+        return runJsonMode(opts);
+    }
+
+    return runInteractive(opts);
 }

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmake --build build 2>&1)",
+      "Bash(cd /Users/avid/Downloads/MAREC/build && ./marec_tests 2>&1)",
+      "Bash(./marec --json --step connect 2>/dev/null | python3 -m json.tool)",
+      "Bash(./marec --json --step tracks 2>/dev/null | python3 -m json.tool)",
+      "Bash(pgrep -x \"Pro Tools\" && echo \"RUNNING\" || echo \"NOT RUNNING\")",
+      "Bash(./marec --help 2>&1)",
+      "Bash(cd /Users/avid/Downloads/MAREC/gui && xcodebuild -project MAREC.xcodeproj -scheme MAREC -configuration Debug build 2>&1 | tail -40)"
+    ]
+  }
+}

@@ -43,6 +43,11 @@ struct RenameAction {
     std::string markerName;
 };
 
+struct RenameOutcome {
+    bool success = false;
+    std::string error; // Empty on success, real PTSL error message on failure
+};
+
 struct ExportConfig {
     std::string outputDir;
     std::string fileType = "wav";  // "wav" or "aiff"
@@ -50,11 +55,24 @@ struct ExportConfig {
     bool enabled = false;
 };
 
+enum class Step {
+    None,       // Interactive CLI mode (default)
+    Connect,
+    Tracks,
+    Markers,
+    Preview,
+    Rename,
+    Export
+};
+
 struct CliOptions {
     bool dryRun = false;
     bool allTracks = false;
     bool renameFile = false;
     bool help = false;
+    bool jsonMode = false;
+    Step step = Step::None;
+    std::vector<std::string> trackNames; // For --tracks "Track 1,Track 2"
     ExportConfig exportConfig;
 };
 

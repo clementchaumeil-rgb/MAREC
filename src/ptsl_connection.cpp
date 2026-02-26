@@ -51,7 +51,7 @@ void PtslConnection::connect(const std::string& companyName, const std::string& 
     }
 
     m_client->SetSessionId(m_sessionId);
-    std::cout << "Connected to Pro Tools (session: " << m_sessionId.substr(0, 8) << "...)\n";
+    std::cerr << "Connected to Pro Tools (session: " << m_sessionId.substr(0, 8) << "...)\n";
 }
 
 CppPTSLClient& PtslConnection::client()

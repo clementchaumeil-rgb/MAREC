@@ -34,39 +34,63 @@ set(INSTALL_GTEST OFF CACHE INTERNAL "")
 
 FetchContent_MakeAvailable(nlohmann_json googletest)
 
-# --- Main executable ---
-add_executable(marec
-    src/main.cpp
+# --- Shared PTSL library (used by marec, test harness, diag) ---
+add_library(marec_ptsl STATIC
     src/ptsl_connection.cpp
     src/ptsl_commands.cpp
-    src/marker_matcher.cpp
     src/time_utils.cpp
-    src/track_selector.cpp
-    src/cli.cpp
+    src/marker_matcher.cpp
 )
 
-target_include_directories(marec PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(marec_ptsl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_link_libraries(marec
-    PRIVATE PTSLC_CPP::PTSLC_CPP
-    PRIVATE nlohmann_json::nlohmann_json
+target_link_libraries(marec_ptsl
+    PUBLIC PTSLC_CPP::PTSLC_CPP
+    PUBLIC nlohmann_json::nlohmann_json
 )
 
+# --- RPATH setup (macOS) ---
 if(APPLE)
-    set_target_properties(marec PROPERTIES
-        BUILD_WITH_INSTALL_RPATH TRUE
-    )
-    # Find the framework directory from the imported target
     get_target_property(_ptsl_location PTSLC_CPP::PTSLC_CPP IMPORTED_LOCATION_RELEASE)
     if(_ptsl_location)
         get_filename_component(_ptsl_framework_dir "${_ptsl_location}/../../.." ABSOLUTE)
         get_filename_component(_ptsl_parent_dir "${_ptsl_framework_dir}/.." ABSOLUTE)
     endif()
-    set_property(TARGET marec APPEND PROPERTY
-        INSTALL_RPATH "@executable_path" "${_ptsl_parent_dir}"
-    )
+endif()
+
+# Helper macro for RPATH on macOS targets that link PTSL
+macro(marec_set_rpath target)
+    if(APPLE)
+        set_target_properties(${target} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+        set_property(TARGET ${target} APPEND PROPERTY
+            INSTALL_RPATH "@executable_path" "${_ptsl_parent_dir}"
+        )
+    endif()
+endmacro()
+
+# --- Main executable ---
+add_executable(marec
+    src/main.cpp
+    src/track_selector.cpp
+    src/cli.cpp
+)
+
+target_link_libraries(marec PRIVATE marec_ptsl)
+marec_set_rpath(marec)
+
+if(APPLE)
     target_compile_definitions(marec PRIVATE MAC_VERSION=1)
 endif()
+
+# --- Test harness (end-to-end PTSL tests) ---
+add_executable(marec_test_harness
+    src/test_harness.cpp
+    src/test_wav_writer.cpp
+    src/test_session_builder.cpp
+)
+
+target_link_libraries(marec_test_harness PRIVATE marec_ptsl)
+marec_set_rpath(marec_test_harness)
 
 # --- Unit tests ---
 add_executable(marec_tests
@@ -87,17 +111,8 @@ target_link_libraries(marec_tests
 
 # --- Diagnostic tool ---
 add_executable(marec_diag src/diagnostic.cpp)
-target_include_directories(marec_diag PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(marec_diag
-    PRIVATE PTSLC_CPP::PTSLC_CPP
-    PRIVATE nlohmann_json::nlohmann_json
-)
-if(APPLE)
-    set_target_properties(marec_diag PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-    set_property(TARGET marec_diag APPEND PROPERTY
-        INSTALL_RPATH "@executable_path" "${_ptsl_parent_dir}"
-    )
-endif()
+target_link_libraries(marec_diag PRIVATE marec_ptsl)
+marec_set_rpath(marec_diag)
 
 # Enable CTest
 include(GoogleTest)
