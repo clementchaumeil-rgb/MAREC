@@ -71,6 +71,13 @@ struct TrackSelectionView: View {
                     .font(Theme.body(12))
                     .foregroundColor(Theme.textTertiary)
 
+                if viewModel.state.isLoading, let progress = viewModel.state.progressMessage {
+                    Text(progress)
+                        .font(Theme.mono(11))
+                        .foregroundColor(Theme.textSecondary)
+                        .transition(.opacity)
+                }
+
                 Button(action: {
                     Task { await viewModel.preview() }
                 }) {

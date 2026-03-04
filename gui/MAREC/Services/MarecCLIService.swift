@@ -72,7 +72,10 @@ final class MarecCLIService {
 
     /// Runs `marec --json --step <step>` with optional extra arguments.
     /// Returns CLIOutput with stdout, stderr, and exit code.
-    func run(step: String, extraArgs: [String] = []) async throws -> CLIOutput {
+    ///
+    /// - Parameter onProgress: Optional callback invoked with progress messages
+    ///   parsed from stderr lines matching `PROGRESS: ...`. Called on the main actor.
+    func run(step: String, extraArgs: [String] = [], onProgress: ((String) -> Void)? = nil) async throws -> CLIOutput {
         let binary = try binaryPath()
         logger.logCLIInvocation(step: step, args: extraArgs)
 
@@ -91,13 +94,67 @@ final class MarecCLIService {
                 process.standardError = stderrPipe
 
                 do {
+                    // If progress callback provided, stream stderr lines in real-time
+                    var stderrChunks = Data()
+                    if let onProgress = onProgress {
+                        var lineBuffer = Data()
+                        stderrPipe.fileHandleForReading.readabilityHandler = { handle in
+                            let chunk = handle.availableData
+                            guard !chunk.isEmpty else { return }
+                            stderrChunks.append(chunk)
+                            lineBuffer.append(chunk)
+
+                            // Parse complete lines from the buffer
+                            while let range = lineBuffer.range(of: Data([0x0A])) { // newline
+                                let lineData = lineBuffer.subdata(in: lineBuffer.startIndex..<range.lowerBound)
+                                lineBuffer.removeSubrange(lineBuffer.startIndex...range.lowerBound)
+
+                                if let line = String(data: lineData, encoding: .utf8),
+                                   line.hasPrefix("PROGRESS: ") {
+                                    let message = String(line.dropFirst("PROGRESS: ".count))
+                                    DispatchQueue.main.async {
+                                        onProgress(message)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     try process.run()
+
+                    // Drain stdout in a background thread to avoid pipe deadlock.
+                    // When CLI output exceeds the ~64KB pipe buffer, the CLI blocks
+                    // on write. If we call waitUntilExit() first, both processes deadlock.
+                    var outData = Data()
+                    let readGroup = DispatchGroup()
+                    readGroup.enter()
+                    DispatchQueue.global().async {
+                        outData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+                        readGroup.leave()
+                    }
+
+                    // If not using readabilityHandler, drain stderr in background too
+                    if onProgress == nil {
+                        readGroup.enter()
+                        DispatchQueue.global().async {
+                            stderrChunks = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                            readGroup.leave()
+                        }
+                    }
+
                     process.waitUntilExit()
 
-                    let outData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
-                    let errData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                    // Clean up readability handler and read any remaining data
+                    if onProgress != nil {
+                        stderrPipe.fileHandleForReading.readabilityHandler = nil
+                        let remaining = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                        stderrChunks.append(remaining)
+                    }
+
+                    readGroup.wait()
+
                     let outString = String(data: outData, encoding: .utf8) ?? ""
-                    let errString = String(data: errData, encoding: .utf8) ?? ""
+                    let errString = String(data: stderrChunks, encoding: .utf8) ?? ""
 
                     logger.logCLIOutput(
                         step: step,
@@ -143,16 +200,16 @@ final class MarecCLIService {
         return try decode(output.stdout)
     }
 
-    func preview(trackNames: [String]) async throws -> PreviewResponse {
+    func preview(trackNames: [String], onProgress: ((String) -> Void)? = nil) async throws -> PreviewResponse {
         var args: [String] = []
         if !trackNames.isEmpty {
             args += ["--tracks", trackNames.joined(separator: ",")]
         }
-        let output = try await run(step: "preview", extraArgs: args)
+        let output = try await run(step: "preview", extraArgs: args, onProgress: onProgress)
         return try decode(output.stdout)
     }
 
-    func rename(trackNames: [String], renameFile: Bool = false) async throws -> RenameResponse {
+    func rename(trackNames: [String], renameFile: Bool = false, onProgress: ((String) -> Void)? = nil) async throws -> RenameResponse {
         var args: [String] = []
         if !trackNames.isEmpty {
             args += ["--tracks", trackNames.joined(separator: ",")]
@@ -160,7 +217,7 @@ final class MarecCLIService {
         if renameFile {
             args.append("--rename-file")
         }
-        let output = try await run(step: "rename", extraArgs: args)
+        let output = try await run(step: "rename", extraArgs: args, onProgress: onProgress)
         return try decode(output.stdout)
     }
 

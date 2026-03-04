@@ -19,7 +19,8 @@ public:
     // Duplicate names under the same marker get _01, _02, ... suffixes.
     static MatchResult match(
         const std::vector<Marker>& markers,
-        const std::vector<PlaylistElement>& elements);
+        const std::vector<PlaylistElement>& elements,
+        const std::string& trackName = "");
 };
 
 } // namespace marec

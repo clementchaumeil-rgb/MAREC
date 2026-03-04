@@ -58,7 +58,11 @@ json PtslCommands::fetchAllPaginated(int32_t commandId, const json& baseRequest,
             }
         }
 
-        // Check if we got all items
+        // PTSL pagination quirk: when limit > 0, 'total' = min(actual_total, limit),
+        // so it's unreliable for knowing the true total. With limit=0, all items are
+        // returned in one call and no further pages are needed.
+        if (pageSize == 0) break; // limit=0 means "return everything"
+
         int total = 0;
         if (resp.contains("pagination_response") &&
             resp["pagination_response"].contains("total") &&
@@ -218,8 +222,11 @@ std::vector<Marker> PtslCommands::getMarkers()
 
 std::vector<ClipInfo> PtslCommands::getClipList()
 {
+    // PTSL pagination quirk: 'total' in response = min(actual_total, limit),
+    // so our paginated fetch was silently truncating at pageSize.
+    // Use limit=0 to request all clips in a single call.
     json allClips = fetchAllPaginated(
-        static_cast<int32_t>(CommandId::CId_GetClipList), json::object(), "clip_list");
+        static_cast<int32_t>(CommandId::CId_GetClipList), json::object(), "clip_list", 0);
 
     std::vector<ClipInfo> clips;
     clips.reserve(allClips.size());
@@ -227,6 +234,7 @@ std::vector<ClipInfo> PtslCommands::getClipList()
     for (const auto& c : allClips) {
         ClipInfo info;
         info.clipId = c.value("clip_id", "");
+        info.fileId = c.value("file_id", "");
         info.clipFullName = c.value("clip_full_name", "");
         info.clipRootName = c.value("clip_root_name", "");
 
@@ -288,7 +296,7 @@ std::vector<PlaylistElement> PtslCommands::getPlaylistElements(
     // Build clip ID -> name lookup
     std::unordered_map<std::string, std::string> idToName;
     for (const auto& c : clipLookup) {
-        idToName[c.clipId] = c.clipFullName;
+        idToName[c.clipId] = c.clipRootName;
     }
 
     json req;
@@ -377,6 +385,32 @@ bool PtslCommands::selectAllClipsOnTrack(const std::string& trackName)
         std::cerr << "  Warning: Failed to select clips on track '" << trackName << "': " << e.what() << "\n";
         return false;
     }
+}
+
+std::set<std::string> PtslCommands::getFileIdsForTrack(const std::string& trackName)
+{
+    std::set<std::string> fileIds;
+
+    // Select all clips on this track
+    if (!selectAllClipsOnTrack(trackName)) {
+        return fileIds;
+    }
+
+    // Get file locations for selected clips on timeline
+    json req;
+    req["file_filters"] = json::array({"FLTFilter_SelectedClipsTimeline"});
+
+    json allFiles = fetchAllPaginated(
+        static_cast<int32_t>(CommandId::CId_GetFileLocation), req, "file_locations");
+
+    for (const auto& f : allFiles) {
+        std::string fid = f.value("file_id", "");
+        if (!fid.empty()) {
+            fileIds.insert(fid);
+        }
+    }
+
+    return fileIds;
 }
 
 bool PtslCommands::exportClipsAsFiles(const ExportConfig& config)

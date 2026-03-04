@@ -3,6 +3,7 @@
 #include "session_data.h"
 
 #include <optional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -45,6 +46,11 @@ public:
     // Selection & export
     bool selectAllClipsOnTrack(const std::string& trackName);
     bool exportClipsAsFiles(const ExportConfig& config);
+
+    // Per-track clip identification (workaround when Private API is unavailable):
+    // Selects all clips on the given track, then queries GetFileLocation with
+    // SelectedClipsTimeline filter to return the set of file_ids for that track.
+    std::set<std::string> getFileIdsForTrack(const std::string& trackName);
 
     // Time conversion via PTSL
     std::optional<int64_t> convertTimeToSamples(const std::string& location, const std::string& timeType);

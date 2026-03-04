@@ -67,6 +67,9 @@ final class AppState: ObservableObject {
     // Rename file option
     @Published var renameFile: Bool = false
 
+    // Progress feedback during long-running CLI operations
+    @Published var progressMessage: String?
+
     func reset() {
         currentStep = .connection
         isLoading = false
@@ -81,5 +84,6 @@ final class AppState: ObservableObject {
         renameResults = []
         renameSummary = nil
         exportResults = []
+        progressMessage = nil
     }
 }

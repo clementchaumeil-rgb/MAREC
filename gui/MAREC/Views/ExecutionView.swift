@@ -31,9 +31,17 @@ struct ExecutionView: View {
                     .font(Theme.bodySemiBold(18))
                     .foregroundColor(Theme.textPrimary)
 
-                Text("MAREC communique avec Pro Tools via PTSL.")
-                    .font(Theme.body(13))
-                    .foregroundColor(Theme.textSecondary)
+                if let progress = viewModel.state.progressMessage {
+                    Text(progress)
+                        .font(Theme.monoMedium(13))
+                        .foregroundColor(Theme.accent)
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.2), value: viewModel.state.progressMessage)
+                } else {
+                    Text("MAREC communique avec Pro Tools via PTSL.")
+                        .font(Theme.body(13))
+                        .foregroundColor(Theme.textSecondary)
+                }
 
                 Text("Ne fermez pas Pro Tools pendant l'operation.")
                     .font(Theme.body(12))

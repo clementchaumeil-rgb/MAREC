@@ -78,7 +78,9 @@ final class MarecViewModel: ObservableObject {
         state.errorMessage = nil
 
         do {
-            let response = try await cli.preview(trackNames: selectedNames)
+            let response = try await cli.preview(trackNames: selectedNames) { [weak state] message in
+                state?.progressMessage = message
+            }
 
             guard response.status == "ok" else {
                 let msg = response.error ?? "Apercu echoue"
@@ -102,6 +104,7 @@ final class MarecViewModel: ObservableObject {
             state.errorMessage = error.localizedDescription
         }
 
+        state.progressMessage = nil
         state.isLoading = false
     }
 
@@ -117,7 +120,9 @@ final class MarecViewModel: ObservableObject {
             let response = try await cli.rename(
                 trackNames: Array(state.selectedTrackNames),
                 renameFile: state.renameFile
-            )
+            ) { [weak state] message in
+                state?.progressMessage = message
+            }
 
             guard response.status == "ok" else {
                 let msg = response.error ?? "Renommage echoue"
@@ -154,6 +159,7 @@ final class MarecViewModel: ObservableObject {
             state.errorMessage = error.localizedDescription
         }
 
+        state.progressMessage = nil
         state.isLoading = false
     }
 

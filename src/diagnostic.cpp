@@ -86,11 +86,11 @@ int main()
     clipReq["pagination_request"] = {{"limit", 50}, {"offset", 0}};
     sendAndDump(client, "GetClipList", CommandId::CId_GetClipList, clipReq);
 
-    // Try GetTrackPlaylists for "Audio 1"
+    // Try GetTrackPlaylists for "RUDI"
     json plReq;
-    plReq["track_name"] = "Audio 1";
+    plReq["track_name"] = "RUDI";
     plReq["pagination_request"] = {{"limit", 50}, {"offset", 0}};
-    auto plResp = sendAndDump(client, "GetTrackPlaylists (Audio 1)", CommandId::CId_GetTrackPlaylists, plReq);
+    auto plResp = sendAndDump(client, "GetTrackPlaylists (RUDI)", CommandId::CId_GetTrackPlaylists, plReq);
 
     // Try GetPlaylistElements if we got a playlist name
     if (plResp.contains("playlists") && plResp["playlists"].is_array()) {
@@ -107,6 +107,20 @@ int main()
             }
         }
     }
+
+    // --- Test workaround: SelectAllClipsOnTrack + GetFileLocation(SelectedClipsTimeline) ---
+    std::cout << "\n\n===== WORKAROUND TEST: Per-track clips via selection =====\n";
+
+    // Select all clips on RUDI
+    json selReq;
+    selReq["track_name"] = "RUDI";
+    sendAndDump(client, "SelectAllClipsOnTrack (RUDI)", CommandId::CId_SelectAllClipsOnTrack, selReq);
+
+    // Get file locations for selected clips
+    json fileLocReq;
+    fileLocReq["file_filters"] = json::array({"FLTFilter_SelectedClipsTimeline"});
+    fileLocReq["pagination_request"] = {{"limit", 50}, {"offset", 0}};
+    sendAndDump(client, "GetFileLocation (SelectedClipsTimeline)", CommandId::CId_GetFileLocation, fileLocReq);
 
     std::cout << "\n===== DIAGNOSTIC COMPLETE =====\n";
     return 0;

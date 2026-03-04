@@ -30,6 +30,7 @@ struct PlaylistElement {
 
 struct ClipInfo {
     std::string clipId;
+    std::string fileId;
     std::string clipFullName;
     std::string clipRootName;
     int64_t startSamples = 0;

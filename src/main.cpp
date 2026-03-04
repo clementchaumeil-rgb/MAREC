@@ -8,6 +8,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <set>
 #include <nlohmann/json.hpp>
 
 using namespace marec;
@@ -21,45 +22,113 @@ static void resolveMarkerTimes(
     for (auto& marker : markers) {
         if (marker.startTime.empty()) continue;
 
-        auto samples = commands.convertTimeToSamples(marker.startTime, "TLType_Samples");
-        if (samples) {
-            marker.startSamples = *samples;
-            continue;
-        }
-
+        // Try local parsing first (handles pure sample numbers, timecode, min:secs)
+        // to avoid expensive PTSL gRPC round-trips for each marker.
         auto localSamples = TimeUtils::parseAuto(marker.startTime, session.sampleRate);
         if (localSamples) {
             marker.startSamples = *localSamples;
-        } else if (!marker.startTime.empty()) {
+            continue;
+        }
+
+        // Fall back to PTSL conversion for formats we can't parse locally (e.g. bars|beats)
+        auto samples = commands.convertTimeToSamples(marker.startTime, "TLType_Samples");
+        if (samples) {
+            marker.startSamples = *samples;
+        } else {
             std::cerr << "  Warning: Cannot resolve time for marker '" << marker.name
                       << "' (time: " << marker.startTime << "), skipping.\n";
         }
     }
 }
 
-static std::vector<PlaylistElement> getTrackElements(
+// Deduplicate stereo L/R channels: same clip name + same start position.
+// On stereo tracks, L and R channels share the same root name and timeline position.
+static std::vector<PlaylistElement> deduplicateElements(std::vector<PlaylistElement> elements)
+{
+    std::vector<PlaylistElement> deduped;
+    deduped.reserve(elements.size());
+    std::set<std::pair<std::string, int64_t>> seen;
+    for (auto& elem : elements) {
+        auto key = std::make_pair(elem.clipName, elem.startSamples);
+        if (seen.insert(key).second) {
+            deduped.push_back(std::move(elem));
+        }
+    }
+    return deduped;
+}
+
+// Try per-track Private API (GetPlaylistElements). Returns empty if unavailable.
+static std::vector<PlaylistElement> getTrackElementsPrivateApi(
     PtslCommands& commands, const TrackInfo& track, const std::vector<ClipInfo>& clipList)
 {
-    try {
-        auto playlists = commands.getTrackPlaylists(track.name);
-        if (!playlists.empty()) {
-            return commands.getPlaylistElements(playlists[0], clipList);
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "  Note: GetPlaylistElements not available for '" << track.name
-                  << "', using clip list fallback. (" << e.what() << ")\n";
+    auto playlists = commands.getTrackPlaylists(track.name);
+    if (!playlists.empty()) {
+        auto elements = commands.getPlaylistElements(playlists[0], clipList);
+        return deduplicateElements(std::move(elements));
     }
+    return {};
+}
 
+// Convert clip list to playlist elements.
+// If fileIds is non-empty, only includes clips whose fileId is in the set.
+static std::vector<PlaylistElement> clipListToElements(
+    const std::vector<ClipInfo>& clipList,
+    const std::set<std::string>& fileIds = {})
+{
     std::vector<PlaylistElement> elements;
+    elements.reserve(clipList.size());
     for (const auto& clip : clipList) {
+        if (!fileIds.empty() && fileIds.find(clip.fileId) == fileIds.end()) {
+            continue;
+        }
         PlaylistElement elem;
         elem.clipId = clip.clipId;
-        elem.clipName = clip.clipFullName;
+        elem.clipName = clip.clipRootName;
         elem.startSamples = clip.startSamples;
         elem.endSamples = clip.endSamples;
         elements.push_back(elem);
     }
-    return elements;
+    return deduplicateElements(std::move(elements));
+}
+
+// Get per-track elements using file ID cross-referencing (public API workaround).
+// SelectAllClipsOnTrack + GetFileLocation(SelectedClipsTimeline) → file_ids → filter clip list.
+static std::vector<PlaylistElement> getTrackElementsByFileId(
+    PtslCommands& commands, const TrackInfo& track, const std::vector<ClipInfo>& clipList)
+{
+    auto fileIds = commands.getFileIdsForTrack(track.name);
+    if (fileIds.empty()) return {};
+    return clipListToElements(clipList, fileIds);
+}
+
+// Check if Private API (GetPlaylistElements, CId=158) is available by probing the first track.
+static bool isPrivateApiAvailable(
+    PtslCommands& commands, const std::vector<TrackInfo>& tracks,
+    const std::vector<ClipInfo>& clipList)
+{
+    if (tracks.empty()) return false;
+    try {
+        auto playlists = commands.getTrackPlaylists(tracks[0].name);
+        if (playlists.empty()) return false;
+        // Actually call GetPlaylistElements to test Private API
+        commands.getPlaylistElements(playlists[0], clipList);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+// Legacy wrapper for interactive mode
+static std::vector<PlaylistElement> getTrackElements(
+    PtslCommands& commands, const TrackInfo& track, const std::vector<ClipInfo>& clipList)
+{
+    try {
+        return getTrackElementsPrivateApi(commands, track, clipList);
+    } catch (const std::exception& e) {
+        std::cerr << "  Note: GetPlaylistElements not available for '" << track.name
+                  << "', using clip list fallback. (" << e.what() << ")\n";
+    }
+    return clipListToElements(clipList);
 }
 
 // Filter tracks by name list
@@ -166,16 +235,17 @@ static json doPreview(const CliOptions& opts)
     int skippedBefore = 0;
     int alreadyCorrect = 0;
 
-    for (const auto& track : selectedTracks) {
-        auto elements = getTrackElements(commands, track, clipList);
-        totalClips += static_cast<int>(elements.size());
+    bool privateApi = isPrivateApiAvailable(commands, selectedTracks, clipList);
 
-        auto result = MarkerMatcher::match(markers, elements);
-        skippedBefore += result.skippedBeforeFirstMarker;
+    // Track claimed clips to avoid duplicate renames when the same file
+    // appears on multiple tracks (e.g. Chutier/arrangement tracks).
+    std::set<std::string> claimedClips;
 
+    auto addActions = [&](const MatchResult& result, const std::string& trackName) {
         for (const auto& action : result.actions) {
+            if (!claimedClips.insert(action.oldName).second) continue; // already claimed
             actionsJson.push_back({
-                {"trackName", track.name},
+                {"trackName", trackName},
                 {"oldName", action.oldName},
                 {"newName", action.newName},
                 {"startSamples", action.startSamples},
@@ -183,6 +253,22 @@ static json doPreview(const CliOptions& opts)
                 {"markerName", action.markerName}
             });
         }
+    };
+
+    // Both paths process per-track with track name prefix.
+    for (size_t trackIdx = 0; trackIdx < selectedTracks.size(); ++trackIdx) {
+        const auto& track = selectedTracks[trackIdx];
+        std::cerr << "PROGRESS: " << (trackIdx + 1) << "/" << selectedTracks.size()
+                  << " " << track.name << std::endl;
+
+        auto elements = privateApi
+            ? getTrackElementsPrivateApi(commands, track, clipList)
+            : getTrackElementsByFileId(commands, track, clipList);
+        totalClips += static_cast<int>(elements.size());
+
+        auto result = MarkerMatcher::match(markers, elements, track.name);
+        skippedBefore += result.skippedBeforeFirstMarker;
+        addActions(result, track.name);
     }
 
     alreadyCorrect = totalClips - static_cast<int>(actionsJson.size()) - skippedBefore;
@@ -220,12 +306,23 @@ static json doRename(const CliOptions& opts)
     try { clipList = commands.getClipList(); } catch (...) {}
 
     // Gather all rename actions
+    bool privateApi = isPrivateApiAvailable(commands, selectedTracks, clipList);
     std::vector<RenameAction> allActions;
-    for (const auto& track : selectedTracks) {
-        auto elements = getTrackElements(commands, track, clipList);
-        auto result = MarkerMatcher::match(markers, elements);
+    std::set<std::string> claimedClips;
+
+    for (size_t trackIdx = 0; trackIdx < selectedTracks.size(); ++trackIdx) {
+        const auto& track = selectedTracks[trackIdx];
+        std::cerr << "PROGRESS: " << (trackIdx + 1) << "/" << selectedTracks.size()
+                  << " " << track.name << std::endl;
+
+        auto elements = privateApi
+            ? getTrackElementsPrivateApi(commands, track, clipList)
+            : getTrackElementsByFileId(commands, track, clipList);
+        auto result = MarkerMatcher::match(markers, elements, track.name);
         for (auto& action : result.actions) {
-            allActions.push_back(std::move(action));
+            if (claimedClips.insert(action.oldName).second) {
+                allActions.push_back(std::move(action));
+            }
         }
     }
 
@@ -234,7 +331,11 @@ static json doRename(const CliOptions& opts)
     int successCount = 0;
     int errorCount = 0;
 
-    for (const auto& action : allActions) {
+    for (size_t i = 0; i < allActions.size(); ++i) {
+        const auto& action = allActions[i];
+        if (i % 10 == 0) {
+            std::cerr << "PROGRESS: renaming " << (i + 1) << "/" << allActions.size() << std::endl;
+        }
         auto outcome = commands.renameTargetClip(action.oldName, action.newName, opts.renameFile);
         json r = {
             {"oldName", action.oldName},
@@ -416,23 +517,29 @@ static int runInteractive(const CliOptions& opts)
 
     // 8. Process each track
     std::vector<RenameAction> allActions;
+    std::set<std::string> claimedClips;
     int totalSkipped = 0;
+    bool privateApi = isPrivateApiAvailable(commands, selectedTracks, clipList);
 
     for (const auto& track : selectedTracks) {
         std::cout << "\nProcessing track: " << track.name << "\n";
 
-        auto elements = getTrackElements(commands, track, clipList);
+        auto elements = privateApi
+            ? getTrackElementsPrivateApi(commands, track, clipList)
+            : getTrackElementsByFileId(commands, track, clipList);
         if (elements.empty()) {
             std::cerr << "  No clips found on track '" << track.name << "'.\n";
             continue;
         }
         std::cout << "  Found " << elements.size() << " clip(s).\n";
 
-        auto result = MarkerMatcher::match(markers, elements);
+        auto result = MarkerMatcher::match(markers, elements, track.name);
         totalSkipped += result.skippedBeforeFirstMarker;
 
         for (auto& action : result.actions) {
-            allActions.push_back(std::move(action));
+            if (claimedClips.insert(action.oldName).second) {
+                allActions.push_back(std::move(action));
+            }
         }
     }
 
