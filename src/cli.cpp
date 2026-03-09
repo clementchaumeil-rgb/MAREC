@@ -29,6 +29,7 @@ static Step parseStep(const std::string& s)
     if (s == "preview") return Step::Preview;
     if (s == "rename")  return Step::Rename;
     if (s == "export")  return Step::Export;
+    if (s == "import")  return Step::ImportMarkers;
     return Step::None;
 }
 
@@ -61,6 +62,11 @@ CliOptions Cli::parse(int argc, char* argv[])
             opts.exportConfig.fileType = argv[++i];
         } else if (arg == "--bit-depth" && i + 1 < argc) {
             opts.exportConfig.bitDepth = std::stoi(argv[++i]);
+        } else if (arg == "--import-markers" && i + 1 < argc) {
+            opts.importConfig.filePath = argv[++i];
+            opts.importConfig.enabled = true;
+        } else if (arg == "--clear-markers") {
+            opts.importConfig.clearMarkers = true;
         } else {
             std::cerr << "Unknown option: " << arg << "\n";
             opts.help = true;
@@ -87,6 +93,11 @@ Interactive mode (default):
   --bit-depth DEPTH   Export bit depth: 16|24|32 (default: 24)
   --help, -h          Show this help message
 
+Import markers from text export:
+  --import-markers FILE   Import markers from Pro Tools text export file
+  --clear-markers         Clear all existing markers before importing
+  --dry-run               Preview import without creating markers
+
 JSON mode (for GUI integration):
   --json --step connect              Connect and return session info
   --json --step tracks               List audio tracks
@@ -94,6 +105,7 @@ JSON mode (for GUI integration):
   --json --step preview --tracks T   Preview rename actions for tracks T
   --json --step rename --tracks T    Execute renaming for tracks T
   --json --step export --tracks T    Export clips for tracks T
+  --json --step import --import-markers FILE   Import markers from text export
 
   --tracks "Track 1,Track 2"   Comma-separated track names
 )";

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **MAREC** is a C++17 CLI + SwiftUI macOS app that automatically renames clips in Pro Tools based on session markers, using the PTSL SDK via gRPC. Built for Audi'Art (Marec Panchot, Sound Engineer) to eliminate a manual 2h/week workflow.
 
-**Core algorithm:** For each clip, binary search (`std::upper_bound`) to find the marker whose position is <= clip start position, then rename the clip to that marker's name. Duplicates get `_01`, `_02` suffixes.
+**Core algorithm:** For each clip, binary search (`std::upper_bound`) to find the marker whose position is <= clip start position, then rename the clip to `"TrackName - MarkerName"`. Duplicates under the same marker get `_01`, `_02` suffixes (e.g. `"Track 1 - Location 11_02"`). Clips before the first marker are skipped. Idempotency: clips already matching the marker prefix (exact or with any `_NN` suffix) are not re-renamed.
 
 ## Build Commands
 
@@ -27,6 +27,7 @@ cmake --build build
 # Run CLI
 ./build/marec --dry-run        # preview only
 ./build/marec --all-tracks     # skip interactive track selection
+./build/marec --rename-file    # also rename source audio files on disk
 ./build/marec --json --step preview --tracks "Track 1"  # JSON mode (used by GUI)
 
 # Build SwiftUI GUI (Xcode)
@@ -53,6 +54,8 @@ The CLI operates in two modes (see `src/main.cpp`):
 Steps: `connect` → `tracks` → `markers` → `preview` → `rename` → `export`
 
 Each JSON step reconnects to Pro Tools independently (stateless). The GUI manages state across steps via `AppState`.
+
+**CLI↔GUI progress protocol:** Long-running steps (`preview`, `rename`) emit `PROGRESS: N/M trackname` lines to stderr. The GUI's `MarecCLIService` parses lines matching `PROGRESS: ` prefix and forwards them to `AppState.progressMessage` for UI display.
 
 ### C++ Layer
 
@@ -115,7 +118,13 @@ GUI tests (XCUITest): `gui/MAREC/MARECUITests/` — 8 scenario files + base clas
 - **Enum names in JSON:** Always use legacy names (`EF_Mono`, `WAV`, `Bit24`), NOT new-style (`EFormat_Mono`, `EFType_WAV`, `BDepth_24`). Check `@request_body_json_example` in `PTSL.proto`.
 - **Response parsing:** Always check `message ...ResponseBody` and `@response_body_json_example` in `PTSL.proto` — responses can be nested objects, not flat strings (e.g., `getSessionPath` → `{session_path: {path: "..."}}`).
 
-**GetPlaylistElements (CId=158)** requires Private API enabled in Pro Tools preferences. The clip list fallback (`GetClipList` + `original_timestamp_point`) works without it.
+**Two clip retrieval strategies** (see `main.cpp`):
+1. **Private API** (`GetPlaylistElements`, CId=158): Per-track playlists → elements. Requires Private API enabled in Pro Tools preferences.
+2. **File-ID fallback** (public API): `SelectAllClipsOnTrack` → `GetFileLocation(SelectedClipsTimeline)` → file IDs → filter the global `GetClipList`. Works without Private API.
+
+The CLI probes Private API availability once on the first track (`isPrivateApiAvailable`) and uses the same strategy for all tracks. Stereo L/R channels are deduplicated by `(clipName, startSamples)`.
+
+**Cross-track deduplication:** A `claimedClips` set prevents the same clip from being renamed by multiple tracks (e.g. when the same audio file appears on arrangement/chutier tracks).
 
 **Pagination:** `pagination_request: {limit, offset}` / `pagination_response: {total, limit, offset}`.
 
@@ -138,3 +147,6 @@ GUI tests (XCUITest): `gui/MAREC/MARECUITests/` — 8 scenario files + base clas
 - Pro Tools can't export to `/tmp/` — use session directory or user home (default: `<session>/Bounced Files/`)
 - Exports are always 24-bit 48kHz WAV (no format UI controls needed)
 - SwiftUI buttons don't expose titles via System Events `name` — use XCUITest with accessibility identifiers (the `AID` enum)
+- GUI labels and error messages are in French (Connexion, Pistes, Apercu, Renommage, Resultats)
+- `MarecCLIService` drains stdout in a background thread before `waitUntilExit()` to avoid pipe deadlock when CLI output exceeds the ~64KB buffer
+- PTSL connection registers as company `"AudiArt"`, app `"MAREC"`

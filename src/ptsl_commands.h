@@ -30,6 +30,7 @@ public:
     // Memory locations
     std::vector<Marker> getMemoryLocations();
     std::vector<Marker> getMarkers(); // Filters to TP_Marker only
+    void clearAllMemoryLocations();
 
     // Clip operations (session-level clip list)
     std::vector<ClipInfo> getClipList();
@@ -64,6 +65,20 @@ public:
     // --- Track / Marker / Clip creation ---
     std::vector<std::string> createNewTracks(const std::string& baseName, int count = 1);
     void createMemoryLocation(int32_t number, const std::string& name, int64_t startSamples);
+    /// Bulk-create markers from raw sample positions.
+    /// Temporarily sets counter to Samples to avoid format conversion issues,
+    /// then restores the original counter format.
+    struct MarkerDef {
+        int32_t number;
+        std::string name;
+        int64_t startSamples;
+    };
+    struct BulkCreateResult {
+        int created = 0;
+        int errors = 0;
+        std::vector<std::pair<int32_t, std::string>> failures; // number → error
+    };
+    BulkCreateResult createMarkersFromSamples(const std::vector<MarkerDef>& markers);
     // Convert a sample position to the session's current counter format string
     std::string convertSamplesToSessionFormat(int64_t samples);
     void importAudioToClipList(const std::vector<std::string>& filePaths);

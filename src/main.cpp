@@ -3,6 +3,7 @@
 #include "ptsl_commands.h"
 #include "ptsl_connection.h"
 #include "session_data.h"
+#include "text_export_parser.h"
 #include "time_utils.h"
 #include "track_selector.h"
 
@@ -412,6 +413,129 @@ static json doExport(const CliOptions& opts)
     };
 }
 
+static json doImportMarkers(const CliOptions& opts)
+{
+    // 1. Parse text export file
+    if (opts.importConfig.filePath.empty()) {
+        return {{"status", "error"}, {"error", "Missing --import-markers <file>"}, {"code", "MISSING_ARG"}};
+    }
+
+    TextExportResult parsed;
+    try {
+        parsed = TextExportParser::parse(opts.importConfig.filePath);
+    } catch (const std::exception& e) {
+        return {{"status", "error"}, {"error", std::string("Parse error: ") + e.what()}, {"code", "PARSE_ERROR"}};
+    }
+
+    // 2. Connect to Pro Tools
+    PtslConnection connection;
+    connection.connect("AudiArt", "MAREC");
+    PtslCommands commands(connection.client());
+
+    int clearedCount = 0;
+
+    // 3. Clear existing markers if requested
+    if (opts.importConfig.clearMarkers) {
+        auto existing = commands.getMarkers();
+        clearedCount = static_cast<int>(existing.size());
+        commands.clearAllMemoryLocations();
+    }
+
+    // 4. Fetch existing markers for conflict detection (unless cleared)
+    std::set<int32_t> existingNumbers;
+    if (!opts.importConfig.clearMarkers) {
+        auto existing = commands.getMemoryLocations();
+        for (const auto& m : existing) {
+            existingNumbers.insert(m.number);
+        }
+    }
+
+    // 5. Separate markers into skip/create lists
+    json resultsJson = json::array();
+    int skippedCount = 0;
+
+    std::vector<PtslCommands::MarkerDef> toCreate;
+
+    for (const auto& marker : parsed.markers) {
+        if (existingNumbers.count(marker.number)) {
+            std::string action = opts.dryRun ? "would_skip" : "skipped";
+            resultsJson.push_back({
+                {"number", marker.number},
+                {"name", marker.name},
+                {"action", action},
+                {"reason", "exists"}
+            });
+            skippedCount++;
+        } else if (opts.dryRun) {
+            resultsJson.push_back({
+                {"number", marker.number},
+                {"name", marker.name},
+                {"action", "would_create"}
+            });
+        } else {
+            toCreate.push_back({marker.number, marker.name, marker.timeReference});
+        }
+    }
+
+    int createdCount = opts.dryRun
+        ? static_cast<int>(parsed.markers.size()) - skippedCount
+        : 0;
+    int errorCount = 0;
+
+    // 6. Bulk-create markers (sets counter to Samples, creates, restores)
+    if (!opts.dryRun && !toCreate.empty()) {
+        std::cerr << "PROGRESS: importing " << toCreate.size() << " markers" << std::endl;
+        auto bulkResult = commands.createMarkersFromSamples(toCreate);
+        createdCount = bulkResult.created;
+        errorCount = bulkResult.errors;
+
+        // Build per-marker results
+        std::set<int32_t> failedNumbers;
+        for (const auto& [num, err] : bulkResult.failures) {
+            failedNumbers.insert(num);
+            resultsJson.push_back({
+                {"number", num},
+                {"name", ""},
+                {"action", "error"},
+                {"reason", err}
+            });
+        }
+
+        for (const auto& m : toCreate) {
+            if (!failedNumbers.count(m.number)) {
+                resultsJson.push_back({
+                    {"number", m.number},
+                    {"name", m.name},
+                    {"action", "created"}
+                });
+            }
+        }
+    }
+
+    // Convert warnings
+    json warningsJson = json::array();
+    for (const auto& w : parsed.warnings) {
+        warningsJson.push_back(w);
+    }
+
+    return {
+        {"status", "ok"},
+        {"results", resultsJson},
+        {"summary", {
+            {"parsed", static_cast<int>(parsed.markers.size())},
+            {"created", createdCount},
+            {"skipped", skippedCount},
+            {"errors", errorCount},
+            {"cleared", clearedCount}
+        }},
+        {"header", {
+            {"sessionName", parsed.header.sessionName},
+            {"sampleRate", parsed.header.sampleRate}
+        }},
+        {"warnings", warningsJson}
+    };
+}
+
 // ---- JSON mode dispatcher ----
 
 static int runJsonMode(const CliOptions& opts)
@@ -424,7 +548,8 @@ static int runJsonMode(const CliOptions& opts)
             case Step::Markers: result = doMarkers(opts); break;
             case Step::Preview: result = doPreview(opts); break;
             case Step::Rename:  result = doRename(opts); break;
-            case Step::Export:  result = doExport(opts); break;
+            case Step::Export:        result = doExport(opts); break;
+            case Step::ImportMarkers: result = doImportMarkers(opts); break;
             default:
                 result = {{"status", "error"}, {"error", "Missing --step argument"}, {"code", "MISSING_STEP"}};
                 break;
@@ -440,6 +565,103 @@ static int runJsonMode(const CliOptions& opts)
         std::cout << err.dump() << std::endl;
         return 1;
     }
+}
+
+// ---- Interactive import markers ----
+
+static int runImportMarkers(const CliOptions& opts)
+{
+    // 1. Parse file
+    std::cout << "Parsing: " << opts.importConfig.filePath << "\n";
+    TextExportResult parsed;
+    try {
+        parsed = TextExportParser::parse(opts.importConfig.filePath);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+
+    std::cout << "Session: " << parsed.header.sessionName
+              << " (" << parsed.header.sampleRate << " Hz)\n";
+    std::cout << "Found " << parsed.markers.size() << " marker(s) in file.\n";
+
+    for (const auto& w : parsed.warnings) {
+        std::cerr << "  Warning: " << w << "\n";
+    }
+
+    // 2. Connect
+    PtslConnection connection;
+    try {
+        connection.connect("AudiArt", "MAREC");
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+    PtslCommands commands(connection.client());
+
+    // 3. Clear if requested
+    if (opts.importConfig.clearMarkers) {
+        auto existing = commands.getMarkers();
+        std::cout << "Clearing " << existing.size() << " existing marker(s)...\n";
+        commands.clearAllMemoryLocations();
+    }
+
+    // 4. Conflict detection
+    std::set<int32_t> existingNumbers;
+    if (!opts.importConfig.clearMarkers) {
+        auto existing = commands.getMemoryLocations();
+        for (const auto& m : existing) {
+            existingNumbers.insert(m.number);
+        }
+        if (!existingNumbers.empty()) {
+            std::cout << "Found " << existingNumbers.size() << " existing memory location(s).\n";
+        }
+    }
+
+    int toCreate = 0, toSkip = 0;
+    for (const auto& m : parsed.markers) {
+        if (existingNumbers.count(m.number)) toSkip++;
+        else toCreate++;
+    }
+
+    std::cout << toCreate << " marker(s) to create, " << toSkip << " to skip (already exist).\n";
+
+    // 5. Dry run
+    if (opts.dryRun) {
+        std::cout << "\n[DRY RUN] No markers created.\n";
+        return 0;
+    }
+
+    if (toCreate == 0) {
+        std::cout << "Nothing to import.\n";
+        return 0;
+    }
+
+    // 6. Confirm
+    std::cout << "\nProceed with import? (y/N): ";
+    std::string confirm;
+    std::getline(std::cin, confirm);
+    if (confirm != "y" && confirm != "Y") {
+        std::cout << "Cancelled.\n";
+        return 0;
+    }
+
+    // 7. Build list and bulk-create (sets counter to Samples, creates, restores)
+    std::vector<PtslCommands::MarkerDef> markerDefs;
+    for (const auto& marker : parsed.markers) {
+        if (!existingNumbers.count(marker.number)) {
+            markerDefs.push_back({marker.number, marker.name, marker.timeReference});
+        }
+    }
+
+    auto bulkResult = commands.createMarkersFromSamples(markerDefs);
+
+    std::cout << "\n" << bulkResult.created << " marker(s) created";
+    if (bulkResult.errors > 0) std::cout << ", " << bulkResult.errors << " error(s)";
+    if (toSkip > 0) std::cout << ", " << toSkip << " skipped";
+    std::cout << ".\n";
+
+    return 0;
 }
 
 // ---- Interactive mode (original) ----
@@ -618,6 +840,10 @@ int main(int argc, char* argv[])
 
     if (opts.jsonMode) {
         return runJsonMode(opts);
+    }
+
+    if (opts.importConfig.enabled) {
+        return runImportMarkers(opts);
     }
 
     return runInteractive(opts);

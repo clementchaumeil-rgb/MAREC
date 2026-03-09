@@ -186,6 +186,87 @@ final class MarecViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Import Markers
+
+    func previewImport() async {
+        guard let url = state.importFilePath else { return }
+        logger.info("Import preview: \(url.path)")
+        state.isLoading = true
+        state.errorMessage = nil
+
+        do {
+            let response = try await cli.importMarkers(
+                filePath: url.path,
+                clearExisting: state.importClearExisting,
+                dryRun: true
+            )
+
+            guard response.status == "ok" else {
+                let msg = response.error ?? "Apercu import echoue"
+                logger.error("Import preview failed: \(msg)")
+                state.errorMessage = msg
+                state.isLoading = false
+                return
+            }
+
+            state.importPreview = response
+            state.showImportSheet = true
+
+            if let summary = response.summary {
+                logger.info("Import preview: \(summary.parsed) parsed, \(summary.created) to create, \(summary.skipped) to skip")
+            }
+        } catch {
+            logger.error("Import preview error: \(error.localizedDescription)")
+            state.errorMessage = error.localizedDescription
+        }
+
+        state.isLoading = false
+    }
+
+    func executeImport() async {
+        guard let url = state.importFilePath else { return }
+        logger.info("Import execute: \(url.path)")
+        state.isLoading = true
+        state.errorMessage = nil
+
+        do {
+            let response = try await cli.importMarkers(
+                filePath: url.path,
+                clearExisting: state.importClearExisting,
+                dryRun: false
+            ) { [weak state] message in
+                state?.progressMessage = message
+            }
+
+            guard response.status == "ok" else {
+                let msg = response.error ?? "Import echoue"
+                logger.error("Import failed: \(msg)")
+                state.errorMessage = msg
+                state.isLoading = false
+                return
+            }
+
+            state.importResults = response
+
+            if let summary = response.summary {
+                logger.info("Import done: \(summary.created) created, \(summary.skipped) skipped, \(summary.errors) errors")
+            }
+
+            // Refresh markers from Pro Tools after successful import
+            let markersResponse = try await cli.markers()
+            if let markerList = markersResponse.markers {
+                state.markers = markerList
+                logger.info("Markers refreshed: \(markerList.count) marker(s)")
+            }
+        } catch {
+            logger.error("Import error: \(error.localizedDescription)")
+            state.errorMessage = error.localizedDescription
+        }
+
+        state.progressMessage = nil
+        state.isLoading = false
+    }
+
     // MARK: - Navigation
 
     func goBack() {

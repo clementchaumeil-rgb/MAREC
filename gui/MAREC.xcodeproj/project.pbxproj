@@ -24,6 +24,7 @@
 		AA000015 /* CollapsibleSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016; };
 		AA000016 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017; };
 		AA000017 /* AccessibilityID.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
+		AA000018 /* ImportMarkersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019; };
 		AA100001 /* AccessibilityID.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
 		AA100002 /* TestHarnessHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100001; };
 		AA100003 /* MARECUITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100002; };
@@ -66,6 +67,7 @@
 		AB000016 /* CollapsibleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSection.swift; sourceTree = "<group>"; };
 		AB000017 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		AB000018 /* AccessibilityID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityID.swift; sourceTree = "<group>"; };
+		AB000019 /* ImportMarkersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportMarkersView.swift; sourceTree = "<group>"; };
 		AB000099 /* MAREC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAREC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB100001 /* TestHarnessHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHarnessHelper.swift; sourceTree = "<group>"; };
 		AB100002 /* MARECUITestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MARECUITestBase.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				AB000010 /* PreviewView.swift */,
 				AB000011 /* ExecutionView.swift */,
 				AB000012 /* ResultsView.swift */,
+				AB000019 /* ImportMarkersView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				AA000015 /* CollapsibleSection.swift in Sources */,
 				AA000016 /* Logger.swift in Sources */,
 				AA000017 /* AccessibilityID.swift in Sources */,
+				AA000018 /* ImportMarkersView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,7 +1,9 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ConnectionView: View {
     @ObservedObject var viewModel: MarecViewModel
+    @State private var showFileImporter = false
 
     var body: some View {
         VStack(spacing: 24) {
@@ -51,6 +53,20 @@ struct ConnectionView: View {
             .disabled(viewModel.state.isLoading)
             .accessibilityIdentifier(AID.connectButton)
 
+            // Import markers button (available anytime — connects internally)
+            Button(action: {
+                showFileImporter = true
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.down.doc")
+                    Text("Importer Marqueurs")
+                }
+                .frame(minWidth: 160)
+            }
+            .buttonStyle(PremiumButtonStyle(isPrimary: false))
+            .disabled(viewModel.state.isLoading)
+            .accessibilityIdentifier(AID.importMarkersButton)
+
             // Error message
             if let error = viewModel.state.errorMessage {
                 HStack(spacing: 8) {
@@ -83,6 +99,27 @@ struct ConnectionView: View {
             }
             .padding(12)
             .premiumCard()
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [UTType.plainText],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                if let url = urls.first {
+                    viewModel.state.importFilePath = url
+                    Task { await viewModel.previewImport() }
+                }
+            case .failure(let error):
+                viewModel.state.errorMessage = error.localizedDescription
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { viewModel.state.showImportSheet },
+            set: { viewModel.state.showImportSheet = $0 }
+        )) {
+            ImportMarkersView(viewModel: viewModel)
         }
     }
 }

@@ -63,7 +63,14 @@ enum class Step {
     Markers,
     Preview,
     Rename,
-    Export
+    Export,
+    ImportMarkers
+};
+
+struct ImportConfig {
+    std::string filePath;      // Path to text export file
+    bool clearMarkers = false; // Delete all existing markers before import
+    bool enabled = false;
 };
 
 struct CliOptions {
@@ -75,6 +82,7 @@ struct CliOptions {
     Step step = Step::None;
     std::vector<std::string> trackNames; // For --tracks "Track 1,Track 2"
     ExportConfig exportConfig;
+    ImportConfig importConfig;
 };
 
 struct SessionInfo {

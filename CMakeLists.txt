@@ -40,6 +40,7 @@ add_library(marec_ptsl STATIC
     src/ptsl_commands.cpp
     src/time_utils.cpp
     src/marker_matcher.cpp
+    src/text_export_parser.cpp
 )
 
 target_include_directories(marec_ptsl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -97,8 +98,10 @@ add_executable(marec_tests
     tests/test_marker_matcher.cpp
     tests/test_time_utils.cpp
     tests/test_session_data.cpp
+    tests/test_text_export_parser.cpp
     src/marker_matcher.cpp
     src/time_utils.cpp
+    src/text_export_parser.cpp
 )
 
 target_include_directories(marec_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

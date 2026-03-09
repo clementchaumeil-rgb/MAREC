@@ -93,6 +93,38 @@ struct RenameResponse: Codable {
     }
 }
 
+struct ImportMarkersResponse: Codable {
+    let status: String
+    let results: [ImportResult]?
+    let summary: ImportSummary?
+    let header: ImportHeader?
+    let warnings: [String]?
+    let error: String?
+    let code: String?
+
+    struct ImportResult: Codable, Identifiable {
+        let number: Int
+        let name: String
+        let action: String       // "created", "skipped", "would_create", "would_skip", "error"
+        let reason: String?
+
+        var id: Int { number }
+    }
+
+    struct ImportSummary: Codable {
+        let parsed: Int
+        let created: Int
+        let skipped: Int
+        let errors: Int
+        let cleared: Int
+    }
+
+    struct ImportHeader: Codable {
+        let sessionName: String
+        let sampleRate: Int
+    }
+}
+
 struct ExportResponse: Codable {
     let status: String
     let results: [ExportResult]?

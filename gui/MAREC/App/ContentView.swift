@@ -49,28 +49,36 @@ struct HeaderView: View {
     let step: AppStep
 
     var body: some View {
-        HStack(spacing: 12) {
-            // App icon placeholder
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Theme.accentGradient)
-                .frame(width: 32, height: 32)
-                .overlay(
-                    Text("M")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(Theme.backgroundPrimary)
-                )
+        HStack {
+            // Unified Saya MAREC branding
+            HStack(spacing: 0) {
+                // Saya icon — rounded rect with centered dash
+                ZStack {
+                    RoundedRectangle(cornerRadius: 4.5)
+                        .stroke(Theme.textPrimary.opacity(0.9), lineWidth: 1.5)
+                        .frame(width: 22, height: 15)
 
-            Text("SAYA")
-                .font(Theme.bodySemiBold(14))
-                .foregroundColor(Theme.textSecondary)
+                    RoundedRectangle(cornerRadius: 0.8)
+                        .fill(Theme.textPrimary.opacity(0.9))
+                        .frame(width: 9, height: 1.5)
+                }
+                .padding(.trailing, 8)
 
-            Rectangle()
-                .fill(Theme.borderSubtle)
-                .frame(width: 1, height: 18)
+                Text("SAYA")
+                    .font(.system(size: 15, weight: .semibold))
+                    .tracking(3)
+                    .foregroundColor(Theme.textPrimary.opacity(0.9))
 
-            Text("MAREC")
-                .font(Theme.bodySemiBold(16))
-                .foregroundColor(Theme.textPrimary)
+                // Thin vertical separator
+                Rectangle()
+                    .fill(Theme.textPrimary.opacity(0.25))
+                    .frame(width: 1, height: 14)
+                    .padding(.horizontal, 10)
+
+                Text("MAREC")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(Theme.textPrimary.opacity(0.9))
+            }
 
             Spacer()
 
@@ -80,7 +88,7 @@ struct HeaderView: View {
                 .accessibilityIdentifier(AID.currentStepLabel)
         }
         .padding(.horizontal, 24)
-        .padding(.vertical, 14)
+        .padding(.vertical, 12)
         .background(Theme.backgroundPrimary.opacity(0.8))
         .overlay(
             Rectangle()
@@ -149,17 +157,17 @@ struct StepIndicator: View {
 // MARK: - Footer
 
 struct FooterView: View {
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    }
+
     var body: some View {
         HStack {
-            Text("MAREC v1.0")
-                .font(Theme.mono(10))
+            Text("Version \(appVersion)  Copyright © 2026 Saya. All rights reserved.")
+                .font(.system(size: 9.5))
                 .foregroundColor(Theme.textTertiary)
 
             Spacer()
-
-            Text("Audi'Art — Groupe Auditorium Artistique")
-                .font(Theme.body(10))
-                .foregroundColor(Theme.textTertiary)
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 10)

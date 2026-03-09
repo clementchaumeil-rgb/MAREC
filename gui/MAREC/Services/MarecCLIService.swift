@@ -240,6 +240,23 @@ final class MarecCLIService {
         return try decode(output.stdout)
     }
 
+    func importMarkers(
+        filePath: String,
+        clearExisting: Bool = false,
+        dryRun: Bool = false,
+        onProgress: ((String) -> Void)? = nil
+    ) async throws -> ImportMarkersResponse {
+        var args = ["--import-markers", filePath]
+        if clearExisting {
+            args.append("--clear-markers")
+        }
+        if dryRun {
+            args.append("--dry-run")
+        }
+        let output = try await run(step: "import", extraArgs: args, onProgress: onProgress)
+        return try decode(output.stdout)
+    }
+
     // MARK: - Decoding
 
     private func decode<T: Decodable>(_ jsonString: String) throws -> T {

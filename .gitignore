@@ -1,5 +1,8 @@
 # Build
 build/
+build-*/
+MAREC.app/
+MAREC.pkg
 
 # SDK (too large for git, keep local)
 PTSL_SDK_CPP.2025.10.0.1267955/

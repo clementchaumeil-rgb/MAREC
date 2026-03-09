@@ -218,6 +218,11 @@ std::vector<Marker> PtslCommands::getMarkers()
     return markers;
 }
 
+void PtslCommands::clearAllMemoryLocations()
+{
+    sendAndParse(static_cast<int32_t>(CommandId::CId_ClearAllMemoryLocations));
+}
+
 // ---- Clip operations ----
 
 std::vector<ClipInfo> PtslCommands::getClipList()
@@ -544,10 +549,70 @@ void PtslCommands::createMemoryLocation(int32_t number, const std::string& name,
     req["number"] = number;
     req["name"] = name;
     req["start_time"] = timeStr;
-    req["time_properties"] = "TProperties_Marker";
-    req["location"] = "MarkerLocation_MainRuler";
+    req["time_properties"] = "TP_Marker";
+    req["location"] = "MLC_MainRuler";
 
     sendAndParse(static_cast<int32_t>(CommandId::CId_CreateMemoryLocation), req);
+}
+
+PtslCommands::BulkCreateResult PtslCommands::createMarkersFromSamples(
+    const std::vector<MarkerDef>& markers)
+{
+    BulkCreateResult result;
+
+    // 1. Save current counter format
+    std::string originalFormat;
+    try {
+        auto fmtResp = sendAndParse(static_cast<int32_t>(CommandId::CId_GetMainCounterFormat));
+        originalFormat = fmtResp.value("current_type",
+            fmtResp.value("current_setting", ""));
+    } catch (...) {}
+
+    // 2. Set counter to Samples so start_time is interpreted as raw samples
+    try {
+        setMainCounterFormat("Samples");
+    } catch (const std::exception& e) {
+        std::cerr << "  Warning: Could not set counter to Samples: " << e.what() << "\n";
+        // Continue anyway — convertSamplesToSessionFormat fallback will be used
+    }
+
+    // 3. Create each marker with raw sample string
+    for (const auto& m : markers) {
+        try {
+            json req;
+            req["number"] = m.number;
+            req["name"] = m.name;
+            req["start_time"] = std::to_string(m.startSamples);
+            req["time_properties"] = "TP_Marker";
+            req["location"] = "MLC_MainRuler";
+
+            sendAndParse(static_cast<int32_t>(CommandId::CId_CreateMemoryLocation), req);
+            result.created++;
+        } catch (const std::exception& e) {
+            result.errors++;
+            result.failures.emplace_back(m.number, e.what());
+            std::cerr << "  Error creating marker #" << m.number
+                      << " '" << m.name << "': " << e.what() << "\n";
+        }
+    }
+
+    // 4. Restore original counter format
+    if (!originalFormat.empty()) {
+        try {
+            json req;
+            req["location_type"] = originalFormat;
+            sendAndParse(static_cast<int32_t>(CommandId::CId_SetMainCounterFormat), req);
+        } catch (...) {
+            // Try legacy field name
+            try {
+                json req;
+                req["time_scale"] = originalFormat;
+                sendAndParse(static_cast<int32_t>(CommandId::CId_SetMainCounterFormat), req);
+            } catch (...) {}
+        }
+    }
+
+    return result;
 }
 
 std::string PtslCommands::convertSamplesToSessionFormat(int64_t samples)

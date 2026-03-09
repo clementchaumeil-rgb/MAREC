@@ -67,6 +67,13 @@ final class AppState: ObservableObject {
     // Rename file option
     @Published var renameFile: Bool = false
 
+    // Import markers
+    @Published var showImportSheet = false
+    @Published var importFilePath: URL? = nil
+    @Published var importPreview: ImportMarkersResponse? = nil
+    @Published var importResults: ImportMarkersResponse? = nil
+    @Published var importClearExisting = false
+
     // Progress feedback during long-running CLI operations
     @Published var progressMessage: String?
 
@@ -84,6 +91,11 @@ final class AppState: ObservableObject {
         renameResults = []
         renameSummary = nil
         exportResults = []
+        showImportSheet = false
+        importFilePath = nil
+        importPreview = nil
+        importResults = nil
+        importClearExisting = false
         progressMessage = nil
     }
 }

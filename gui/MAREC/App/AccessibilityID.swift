@@ -30,6 +30,13 @@ enum AID {
     static let resultsTotalCount = "results.totalCount"
     static let newSessionButton = "results.newSessionButton"
 
+    // MARK: - Import Markers
+    static let importMarkersButton = "connection.importMarkersButton"
+    static let importConfirmButton = "import.confirmButton"
+    static let importCancelButton = "import.cancelButton"
+    static let importPreviewCount = "import.previewCount"
+    static let importClearToggle = "import.clearToggle"
+
     // MARK: - Navigation
     static let currentStepLabel = "app.currentStepLabel"
 }
