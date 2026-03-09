@@ -1,0 +1,221 @@
+SESSION NAME:	Saddle Club_ep103
+SAMPLE RATE:	48000.000000
+BIT DEPTH:	24-bit
+SESSION START TIMECODE:	00:00:00:00
+TIMECODE FORMAT:	24 Frame
+# OF AUDIO TRACKS:	24
+# OF AUDIO CLIPS:	962
+# OF AUDIO FILES:	416
+
+
+M A R K E R S  L I S T I N G
+#   	LOCATION     	TIME REFERENCE    	UNITS    	NAME                             	TRACK NAME                       	TRACK TYPE   	COMMENTS
+1   	10:00:00:00  	1728000000        	Samples  	Location 1                       	Markers                          	Ruler                            	
+2   	10:00:30:00  	1729440000        	Samples  	Location 2                       	Markers                          	Ruler                            	
+3   	10:01:00:00  	1730880000        	Samples  	Location 3                       	Markers                          	Ruler                            	
+4   	10:01:30:00  	1732320000        	Samples  	Location 4                       	Markers                          	Ruler                            	
+5   	10:02:00:00  	1733760000        	Samples  	Location 5                       	Markers                          	Ruler                            	
+6   	10:02:30:00  	1735200000        	Samples  	Location 6                       	Markers                          	Ruler                            	
+7   	10:03:00:00  	1736640000        	Samples  	Location 7                       	Markers                          	Ruler                            	
+8   	10:03:30:00  	1738080000        	Samples  	Location 8                       	Markers                          	Ruler                            	
+9   	10:04:00:00  	1739520000        	Samples  	Location 9                       	Markers                          	Ruler                            	
+10  	10:04:30:00  	1740960000        	Samples  	Location 10                      	Markers                          	Ruler                            	
+11  	10:05:00:00  	1742400000        	Samples  	Location 11                      	Markers                          	Ruler                            	
+12  	10:05:30:00  	1743840000        	Samples  	Location 12                      	Markers                          	Ruler                            	
+13  	10:06:00:00  	1745280000        	Samples  	Location 13                      	Markers                          	Ruler                            	
+14  	10:06:30:00  	1746720000        	Samples  	Location 14                      	Markers                          	Ruler                            	
+15  	10:07:00:00  	1748160000        	Samples  	Location 15                      	Markers                          	Ruler                            	
+16  	10:07:30:00  	1749600000        	Samples  	Location 16                      	Markers                          	Ruler                            	
+17  	10:08:00:00  	1751040000        	Samples  	Location 17                      	Markers                          	Ruler                            	
+18  	10:08:30:00  	1752480000        	Samples  	Location 18                      	Markers                          	Ruler                            	
+19  	10:09:00:00  	1753920000        	Samples  	Location 19                      	Markers                          	Ruler                            	
+20  	10:09:30:00  	1755360000        	Samples  	Location 20                      	Markers                          	Ruler                            	
+21  	10:10:00:00  	1756800000        	Samples  	Location 21                      	Markers                          	Ruler                            	
+22  	10:10:30:00  	1758240000        	Samples  	Location 22                      	Markers                          	Ruler                            	
+23  	10:11:00:00  	1759680000        	Samples  	Location 23                      	Markers                          	Ruler                            	
+24  	10:11:30:00  	1761120000        	Samples  	Location 24                      	Markers                          	Ruler                            	
+25  	10:12:00:00  	1762560000        	Samples  	Location 25                      	Markers                          	Ruler                            	
+26  	10:12:30:00  	1764000000        	Samples  	Location 26                      	Markers                          	Ruler                            	
+27  	10:13:00:00  	1765440000        	Samples  	Location 27                      	Markers                          	Ruler                            	
+28  	10:13:30:00  	1766880000        	Samples  	Location 28                      	Markers                          	Ruler                            	
+29  	10:14:00:00  	1768320000        	Samples  	Location 29                      	Markers                          	Ruler                            	
+30  	10:14:30:00  	1769760000        	Samples  	Location 30                      	Markers                          	Ruler                            	
+31  	10:15:00:00  	1771200000        	Samples  	Location 31                      	Markers                          	Ruler                            	
+32  	10:15:30:00  	1772640000        	Samples  	Location 32                      	Markers                          	Ruler                            	
+33  	10:16:00:00  	1774080000        	Samples  	Location 33                      	Markers                          	Ruler                            	
+34  	10:16:30:00  	1775520000        	Samples  	Location 34                      	Markers                          	Ruler                            	
+35  	10:17:00:00  	1776960000        	Samples  	Location 35                      	Markers                          	Ruler                            	
+36  	10:17:30:00  	1778400000        	Samples  	Location 36                      	Markers                          	Ruler                            	
+37  	10:18:00:00  	1779840000        	Samples  	Location 37                      	Markers                          	Ruler                            	
+38  	10:18:30:00  	1781280000        	Samples  	Location 38                      	Markers                          	Ruler                            	
+39  	10:19:00:00  	1782720000        	Samples  	Location 39                      	Markers                          	Ruler                            	
+40  	10:19:30:00  	1784160000        	Samples  	Location 40                      	Markers                          	Ruler                            	
+41  	10:20:00:00  	1785600000        	Samples  	Location 41                      	Markers                          	Ruler                            	
+42  	10:20:30:00  	1787040000        	Samples  	Location 42                      	Markers                          	Ruler                            	
+43  	10:21:00:00  	1788480000        	Samples  	Location 43                      	Markers                          	Ruler                            	
+44  	10:21:30:00  	1789920000        	Samples  	Location 44                      	Markers                          	Ruler                            	
+45  	10:22:00:00  	1791360000        	Samples  	Location 45                      	Markers                          	Ruler                            	
+46  	10:22:30:00  	1792800000        	Samples  	Location 46                      	Markers                          	Ruler                            	
+47  	10:23:00:00  	1794240000        	Samples  	Location 47                      	Markers                          	Ruler                            	
+48  	10:23:30:00  	1795680000        	Samples  	Location 48                      	Markers                          	Ruler                            	
+49  	10:24:00:00  	1797120000        	Samples  	Location 49                      	Markers                          	Ruler                            	
+50  	10:24:30:00  	1798560000        	Samples  	Location 50                      	Markers                          	Ruler                            	
+51  	10:25:00:00  	1800000000        	Samples  	Location 51                      	Markers                          	Ruler                            	
+52  	10:25:30:00  	1801440000        	Samples  	Location 52                      	Markers                          	Ruler                            	
+53  	10:26:00:00  	1802880000        	Samples  	Location 53                      	Markers                          	Ruler                            	
+54  	10:26:30:00  	1804320000        	Samples  	Location 54                      	Markers                          	Ruler                            	
+55  	10:27:00:00  	1805760000        	Samples  	Location 55                      	Markers                          	Ruler                            	
+56  	10:27:30:00  	1807200000        	Samples  	Location 56                      	Markers                          	Ruler                            	
+57  	10:28:00:00  	1808640000        	Samples  	Location 57                      	Markers                          	Ruler                            	
+58  	10:28:30:00  	1810080000        	Samples  	Location 58                      	Markers                          	Ruler                            	
+59  	10:29:00:00  	1811520000        	Samples  	Location 59                      	Markers                          	Ruler                            	
+60  	10:29:30:00  	1812960000        	Samples  	Location 60                      	Markers                          	Ruler                            	
+61  	10:30:00:00  	1814400000        	Samples  	Location 61                      	Markers                          	Ruler                            	
+62  	10:30:30:00  	1815840000        	Samples  	Location 62                      	Markers                          	Ruler                            	
+63  	10:31:00:00  	1817280000        	Samples  	Location 63                      	Markers                          	Ruler                            	
+64  	10:31:30:00  	1818720000        	Samples  	Location 64                      	Markers                          	Ruler                            	
+65  	10:32:00:00  	1820160000        	Samples  	Location 65                      	Markers                          	Ruler                            	
+66  	10:32:30:00  	1821600000        	Samples  	Location 66                      	Markers                          	Ruler                            	
+67  	10:33:00:00  	1823040000        	Samples  	Location 67                      	Markers                          	Ruler                            	
+68  	10:33:30:00  	1824480000        	Samples  	Location 68                      	Markers                          	Ruler                            	
+69  	10:34:00:00  	1825920000        	Samples  	Location 69                      	Markers                          	Ruler                            	
+70  	10:34:30:00  	1827360000        	Samples  	Location 70                      	Markers                          	Ruler                            	
+71  	10:35:00:00  	1828800000        	Samples  	Location 71                      	Markers                          	Ruler                            	
+72  	10:35:30:00  	1830240000        	Samples  	Location 72                      	Markers                          	Ruler                            	
+73  	10:36:00:00  	1831680000        	Samples  	Location 73                      	Markers                          	Ruler                            	
+74  	10:36:30:00  	1833120000        	Samples  	Location 74                      	Markers                          	Ruler                            	
+75  	10:37:00:00  	1834560000        	Samples  	Location 75                      	Markers                          	Ruler                            	
+76  	10:37:30:00  	1836000000        	Samples  	Location 76                      	Markers                          	Ruler                            	
+77  	10:38:00:00  	1837440000        	Samples  	Location 77                      	Markers                          	Ruler                            	
+201 	10:38:11:08  	1837984000        	Samples  	bis                              	Markers                          	Ruler                            	
+78  	10:38:30:00  	1838880000        	Samples  	Location 78                      	Markers                          	Ruler                            	
+79  	10:39:00:00  	1840320000        	Samples  	Location 79                      	Markers                          	Ruler                            	
+80  	10:39:30:00  	1841760000        	Samples  	Location 80                      	Markers                          	Ruler                            	
+81  	10:40:00:00  	1843200000        	Samples  	Location 81                      	Markers                          	Ruler                            	
+82  	10:40:30:00  	1844640000        	Samples  	Location 82                      	Markers                          	Ruler                            	
+83  	10:41:00:00  	1846080000        	Samples  	Location 83                      	Markers                          	Ruler                            	
+84  	10:41:30:00  	1847520000        	Samples  	Location 84                      	Markers                          	Ruler                            	
+85  	10:42:00:00  	1848960000        	Samples  	Location 85                      	Markers                          	Ruler                            	
+86  	10:42:30:00  	1850400000        	Samples  	Location 86                      	Markers                          	Ruler                            	
+87  	10:43:00:00  	1851840000        	Samples  	Location 87                      	Markers                          	Ruler                            	
+88  	10:43:30:00  	1853280000        	Samples  	Location 88                      	Markers                          	Ruler                            	
+89  	10:44:00:00  	1854720000        	Samples  	Location 89                      	Markers                          	Ruler                            	
+90  	10:44:30:00  	1856160000        	Samples  	Location 90                      	Markers                          	Ruler                            	
+91  	10:45:00:00  	1857600000        	Samples  	Location 91                      	Markers                          	Ruler                            	
+92  	10:45:30:00  	1859040000        	Samples  	Location 92                      	Markers                          	Ruler                            	
+93  	10:46:00:00  	1860480000        	Samples  	Location 93                      	Markers                          	Ruler                            	
+206 	10:46:15:13  	1861226000        	Samples  	bis                              	Markers                          	Ruler                            	
+94  	10:46:30:00  	1861920000        	Samples  	Location 94                      	Markers                          	Ruler                            	
+95  	10:47:00:00  	1863360000        	Samples  	Location 95                      	Markers                          	Ruler                            	
+96  	10:47:30:00  	1864800000        	Samples  	Location 96                      	Markers                          	Ruler                            	
+97  	10:48:00:00  	1866240000        	Samples  	Location 97                      	Markers                          	Ruler                            	
+98  	10:48:30:00  	1867680000        	Samples  	Location 98                      	Markers                          	Ruler                            	
+99  	10:49:00:00  	1869120000        	Samples  	Location 99                      	Markers                          	Ruler                            	
+100 	10:49:30:00  	1870560000        	Samples  	Location 100                     	Markers                          	Ruler                            	
+101 	10:50:00:00  	1872000000        	Samples  	Location 101                     	Markers                          	Ruler                            	
+102 	10:50:30:00  	1873440000        	Samples  	Location 102                     	Markers                          	Ruler                            	
+103 	10:51:00:00  	1874880000        	Samples  	Location 103                     	Markers                          	Ruler                            	
+104 	10:51:30:00  	1876320000        	Samples  	Location 104                     	Markers                          	Ruler                            	
+105 	10:52:00:00  	1877760000        	Samples  	Location 105                     	Markers                          	Ruler                            	
+106 	10:52:30:00  	1879200000        	Samples  	Location 106                     	Markers                          	Ruler                            	
+107 	10:53:00:00  	1880640000        	Samples  	Location 107                     	Markers                          	Ruler                            	
+108 	10:53:30:00  	1882080000        	Samples  	Location 108                     	Markers                          	Ruler                            	
+208 	10:53:41:00  	1882608000        	Samples  	bis                              	Markers                          	Ruler                            	
+109 	10:54:00:00  	1883520000        	Samples  	Location 109                     	Markers                          	Ruler                            	
+110 	10:54:30:00  	1884960000        	Samples  	Location 110                     	Markers                          	Ruler                            	
+111 	10:55:00:00  	1886400000        	Samples  	Location 111                     	Markers                          	Ruler                            	
+112 	10:55:30:00  	1887840000        	Samples  	Location 112                     	Markers                          	Ruler                            	
+113 	10:56:00:00  	1889280000        	Samples  	Location 113                     	Markers                          	Ruler                            	
+114 	10:56:30:00  	1890720000        	Samples  	Location 114                     	Markers                          	Ruler                            	
+115 	10:57:00:00  	1892160000        	Samples  	Location 115                     	Markers                          	Ruler                            	
+116 	10:57:30:00  	1893600000        	Samples  	Location 116                     	Markers                          	Ruler                            	
+117 	10:58:00:00  	1895040000        	Samples  	Location 117                     	Markers                          	Ruler                            	
+118 	10:58:30:00  	1896480000        	Samples  	Location 118                     	Markers                          	Ruler                            	
+119 	10:59:00:00  	1897920000        	Samples  	Location 119                     	Markers                          	Ruler                            	
+120 	10:59:30:00  	1899360000        	Samples  	Location 120                     	Markers                          	Ruler                            	
+121 	11:00:00:00  	1900800000        	Samples  	Location 121                     	Markers                          	Ruler                            	
+122 	11:00:30:00  	1902240000        	Samples  	Location 122                     	Markers                          	Ruler                            	
+123 	11:01:00:00  	1903680000        	Samples  	Location 123                     	Markers                          	Ruler                            	
+124 	11:01:30:00  	1905120000        	Samples  	Location 124                     	Markers                          	Ruler                            	
+125 	11:02:00:00  	1906560000        	Samples  	Location 125                     	Markers                          	Ruler                            	
+126 	11:02:30:00  	1908000000        	Samples  	Location 126                     	Markers                          	Ruler                            	
+127 	11:03:00:00  	1909440000        	Samples  	Location 127                     	Markers                          	Ruler                            	
+128 	11:03:30:00  	1910880000        	Samples  	Location 128                     	Markers                          	Ruler                            	
+129 	11:04:00:00  	1912320000        	Samples  	Location 129                     	Markers                          	Ruler                            	
+130 	11:04:30:00  	1913760000        	Samples  	Location 130                     	Markers                          	Ruler                            	
+131 	11:05:00:00  	1915200000        	Samples  	Location 131                     	Markers                          	Ruler                            	
+132 	11:05:30:00  	1916640000        	Samples  	Location 132                     	Markers                          	Ruler                            	
+133 	11:06:00:00  	1918080000        	Samples  	Location 133                     	Markers                          	Ruler                            	
+134 	11:06:30:00  	1919520000        	Samples  	Location 134                     	Markers                          	Ruler                            	
+135 	11:07:00:00  	1920960000        	Samples  	Location 135                     	Markers                          	Ruler                            	
+136 	11:07:30:00  	1922400000        	Samples  	Location 136                     	Markers                          	Ruler                            	
+137 	11:08:00:00  	1923840000        	Samples  	Location 137                     	Markers                          	Ruler                            	
+138 	11:08:30:00  	1925280000        	Samples  	Location 138                     	Markers                          	Ruler                            	
+139 	11:09:00:00  	1926720000        	Samples  	Location 139                     	Markers                          	Ruler                            	
+207 	11:09:14:01  	1927394000        	Samples  	bis                              	Markers                          	Ruler                            	
+140 	11:09:30:00  	1928160000        	Samples  	Location 140                     	Markers                          	Ruler                            	
+141 	11:10:00:00  	1929600000        	Samples  	Location 141                     	Markers                          	Ruler                            	
+142 	11:10:30:00  	1931040000        	Samples  	Location 142                     	Markers                          	Ruler                            	
+143 	11:11:00:00  	1932480000        	Samples  	Location 143                     	Markers                          	Ruler                            	
+144 	11:11:30:00  	1933920000        	Samples  	Location 144                     	Markers                          	Ruler                            	
+145 	11:12:00:00  	1935360000        	Samples  	Location 145                     	Markers                          	Ruler                            	
+146 	11:12:30:00  	1936800000        	Samples  	Location 146                     	Markers                          	Ruler                            	
+147 	11:13:00:00  	1938240000        	Samples  	Location 147                     	Markers                          	Ruler                            	
+148 	11:13:30:00  	1939680000        	Samples  	Location 148                     	Markers                          	Ruler                            	
+149 	11:14:00:00  	1941120000        	Samples  	Location 149                     	Markers                          	Ruler                            	
+150 	11:14:30:00  	1942560000        	Samples  	Location 150                     	Markers                          	Ruler                            	
+202 	11:14:50:08  	1943536000        	Samples  	bis                              	Markers                          	Ruler                            	
+151 	11:15:00:00  	1944000000        	Samples  	Location 151                     	Markers                          	Ruler                            	
+203 	11:15:17:00  	1944816000        	Samples  	bis                              	Markers                          	Ruler                            	
+204 	11:15:21:13  	1945034000        	Samples  	ter                              	Markers                          	Ruler                            	
+152 	11:15:30:00  	1945440000        	Samples  	Location 152                     	Markers                          	Ruler                            	
+153 	11:16:00:00  	1946880000        	Samples  	Location 153                     	Markers                          	Ruler                            	
+154 	11:16:30:00  	1948320000        	Samples  	Location 154                     	Markers                          	Ruler                            	
+155 	11:17:00:00  	1949760000        	Samples  	Location 155                     	Markers                          	Ruler                            	
+156 	11:17:30:00  	1951200000        	Samples  	Location 156                     	Markers                          	Ruler                            	
+157 	11:18:00:00  	1952640000        	Samples  	Location 157                     	Markers                          	Ruler                            	
+158 	11:18:30:00  	1954080000        	Samples  	Location 158                     	Markers                          	Ruler                            	
+159 	11:19:00:00  	1955520000        	Samples  	Location 159                     	Markers                          	Ruler                            	
+160 	11:19:30:00  	1956960000        	Samples  	Location 160                     	Markers                          	Ruler                            	
+161 	11:20:00:00  	1958400000        	Samples  	Location 161                     	Markers                          	Ruler                            	
+162 	11:20:30:00  	1959840000        	Samples  	Location 162                     	Markers                          	Ruler                            	
+163 	11:21:00:00  	1961280000        	Samples  	Location 163                     	Markers                          	Ruler                            	
+164 	11:21:30:00  	1962720000        	Samples  	Location 164                     	Markers                          	Ruler                            	
+165 	11:22:00:00  	1964160000        	Samples  	Location 165                     	Markers                          	Ruler                            	
+205 	11:22:13:23  	1964830000        	Samples  	bis                              	Markers                          	Ruler                            	
+209 	11:22:21:07  	1965182000        	Samples  	ter                              	Markers                          	Ruler                            	
+166 	11:22:30:00  	1965600000        	Samples  	Location 166                     	Markers                          	Ruler                            	
+167 	11:23:00:00  	1967040000        	Samples  	Location 167                     	Markers                          	Ruler                            	
+168 	11:23:30:00  	1968480000        	Samples  	Location 168                     	Markers                          	Ruler                            	
+169 	11:24:00:00  	1969920000        	Samples  	Location 169                     	Markers                          	Ruler                            	
+170 	11:24:30:00  	1971360000        	Samples  	Location 170                     	Markers                          	Ruler                            	
+171 	11:25:00:00  	1972800000        	Samples  	Location 171                     	Markers                          	Ruler                            	
+172 	11:25:30:00  	1974240000        	Samples  	Location 172                     	Markers                          	Ruler                            	
+173 	11:26:00:00  	1975680000        	Samples  	Location 173                     	Markers                          	Ruler                            	
+174 	11:26:30:00  	1977120000        	Samples  	Location 174                     	Markers                          	Ruler                            	
+175 	11:27:00:00  	1978560000        	Samples  	Location 175                     	Markers                          	Ruler                            	
+176 	11:27:30:00  	1980000000        	Samples  	Location 176                     	Markers                          	Ruler                            	
+177 	11:28:00:00  	1981440000        	Samples  	Location 177                     	Markers                          	Ruler                            	
+178 	11:28:30:00  	1982880000        	Samples  	Location 178                     	Markers                          	Ruler                            	
+179 	11:29:00:00  	1984320000        	Samples  	Location 179                     	Markers                          	Ruler                            	
+180 	11:29:30:00  	1985760000        	Samples  	Location 180                     	Markers                          	Ruler                            	
+181 	11:30:00:00  	1987200000        	Samples  	Location 181                     	Markers                          	Ruler                            	
+182 	11:30:30:00  	1988640000        	Samples  	Location 182                     	Markers                          	Ruler                            	
+183 	11:31:00:00  	1990080000        	Samples  	Location 183                     	Markers                          	Ruler                            	
+184 	11:31:30:00  	1991520000        	Samples  	Location 184                     	Markers                          	Ruler                            	
+185 	11:32:00:00  	1992960000        	Samples  	Location 185                     	Markers                          	Ruler                            	
+186 	11:32:30:00  	1994400000        	Samples  	Location 186                     	Markers                          	Ruler                            	
+187 	11:33:00:00  	1995840000        	Samples  	Location 187                     	Markers                          	Ruler                            	
+188 	11:33:30:00  	1997280000        	Samples  	Location 188                     	Markers                          	Ruler                            	
+189 	11:34:00:00  	1998720000        	Samples  	Location 189                     	Markers                          	Ruler                            	
+190 	11:34:30:00  	2000160000        	Samples  	Location 190                     	Markers                          	Ruler                            	
+191 	11:35:00:00  	2001600000        	Samples  	Location 191                     	Markers                          	Ruler                            	
+192 	11:35:30:00  	2003040000        	Samples  	Location 192                     	Markers                          	Ruler                            	
+193 	11:36:00:00  	2004480000        	Samples  	Location 193                     	Markers                          	Ruler                            	
+194 	11:36:30:00  	2005920000        	Samples  	Location 194                     	Markers                          	Ruler                            	
+195 	11:37:00:00  	2007360000        	Samples  	Location 195                     	Markers                          	Ruler                            	
+196 	11:37:30:00  	2008800000        	Samples  	Location 196                     	Markers                          	Ruler                            	
+197 	11:38:00:00  	2010240000        	Samples  	Location 197                     	Markers                          	Ruler                            	
+198 	11:38:30:00  	2011680000        	Samples  	Location 198                     	Markers                          	Ruler                            	
+199 	11:39:00:00  	2013120000        	Samples  	Location 199                     	Markers                          	Ruler                            	
+200 	11:39:30:00  	2014560000        	Samples  	Location 200                     	Markers                          	Ruler                            	

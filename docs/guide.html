@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MAREC — Guide utilisateur</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+@page {
+size: A4;
+margin: 25mm 20mm 25mm 20mm;
+@bottom-center {
+content: counter(page);
+font-family: "SF Pro Text", "Helvetica Neue", sans-serif;
+font-size: 9pt;
+color: #999;
+}
+}
+@page :first {
+margin-top: 40mm;
+}
+:root {
+--accent: #4A90D9;
+--accent-light: #EBF2FA;
+--text: #1a1a1a;
+--text-secondary: #555;
+--text-tertiary: #888;
+--border: #ddd;
+--bg-code: #f5f5f5;
+--bg-callout-warn: #FFF8E1;
+--bg-callout-info: #E8F4FD;
+--bg-callout-tip: #E8F5E9;
+--border-warn: #F9A825;
+--border-info: #4A90D9;
+--border-tip: #43A047;
+}
+* {
+box-sizing: border-box;
+}
+body {
+font-family: "SF Pro Text", "Helvetica Neue", -apple-system, sans-serif;
+font-size: 10.5pt;
+line-height: 1.6;
+color: var(--text);
+max-width: 100%;
+orphans: 3;
+widows: 3;
+}
+
+h1 {
+font-family: "SF Pro Display", "Helvetica Neue", sans-serif;
+font-size: 28pt;
+font-weight: 700;
+color: var(--accent);
+border-bottom: 3px solid var(--accent);
+padding-bottom: 12pt;
+margin-bottom: 6pt;
+letter-spacing: -0.5px;
+}
+
+h1 + p > strong:first-child {
+font-size: 10pt;
+color: var(--text-secondary);
+}
+h2 {
+font-family: "SF Pro Display", "Helvetica Neue", sans-serif;
+font-size: 18pt;
+font-weight: 600;
+color: var(--accent);
+border-bottom: 1.5px solid var(--border);
+padding-bottom: 6pt;
+margin-top: 28pt;
+margin-bottom: 12pt;
+page-break-after: avoid;
+}
+h3 {
+font-size: 13pt;
+font-weight: 600;
+color: var(--text);
+margin-top: 20pt;
+margin-bottom: 8pt;
+page-break-after: avoid;
+}
+h4 {
+font-size: 11pt;
+font-weight: 600;
+color: var(--text-secondary);
+margin-top: 16pt;
+margin-bottom: 6pt;
+page-break-after: avoid;
+}
+
+hr {
+border: none;
+border-top: 1px solid var(--border);
+margin: 24pt 0;
+}
+
+p {
+margin: 6pt 0;
+}
+
+ul, ol {
+margin: 6pt 0;
+padding-left: 20pt;
+}
+li {
+margin-bottom: 4pt;
+}
+li > p {
+margin: 2pt 0;
+}
+
+strong {
+font-weight: 600;
+}
+
+code {
+font-family: "SF Mono", "Menlo", "Monaco", monospace;
+font-size: 9.5pt;
+background: var(--bg-code);
+padding: 1pt 4pt;
+border-radius: 3pt;
+border: 0.5px solid #e0e0e0;
+}
+
+pre {
+background: #1e1e2e;
+color: #cdd6f4;
+padding: 12pt 16pt;
+border-radius: 6pt;
+font-family: "SF Mono", "Menlo", monospace;
+font-size: 9pt;
+line-height: 1.5;
+overflow-x: auto;
+page-break-inside: avoid;
+margin: 8pt 0;
+}
+pre code {
+background: none;
+border: none;
+padding: 0;
+color: inherit;
+font-size: inherit;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+margin: 10pt 0;
+font-size: 10pt;
+page-break-inside: avoid;
+}
+thead {
+background: var(--accent-light);
+}
+th {
+font-weight: 600;
+text-align: left;
+padding: 8pt 10pt;
+border-bottom: 2px solid var(--accent);
+color: var(--text);
+font-size: 9.5pt;
+text-transform: uppercase;
+letter-spacing: 0.3px;
+}
+td {
+padding: 7pt 10pt;
+border-bottom: 0.5px solid var(--border);
+vertical-align: top;
+}
+tr:nth-child(even) {
+background: #fafafa;
+}
+
+blockquote {
+margin: 10pt 0;
+padding: 10pt 14pt;
+border-radius: 6pt;
+border-left: 4px solid var(--border);
+background: #f8f8f8;
+page-break-inside: avoid;
+}
+blockquote p {
+margin: 2pt 0;
+font-size: 10pt;
+}
+
+blockquote p strong:first-child {
+display: inline;
+}
+
+a {
+color: var(--accent);
+text-decoration: none;
+}
+a:hover {
+text-decoration: underline;
+}
+
+h2#table-des-matières + ol,
+h2#table-des-matières + ul {
+columns: 2;
+column-gap: 24pt;
+}
+
+@media print {
+body {
+font-size: 10pt;
+}
+h1 {
+font-size: 24pt;
+}
+h2 {
+font-size: 16pt;
+page-break-before: auto;
+}
+h3, h4 {
+page-break-after: avoid;
+}
+pre, table, blockquote {
+page-break-inside: avoid;
+}
+a {
+color: var(--accent);
+}
+a[href^="http"]::after {
+content: none;
+}
+}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MAREC — Guide utilisateur</h1>
+</header>
+<h1 id="marec-guide-utilisateur">MAREC — Guide utilisateur</h1>
+<p><strong>Version 1.0</strong> · Copyright © 2026 Saya</p>
+<hr />
+<h2 id="table-des-matières">Table des matières</h2>
+<ol type="1">
+<li><a href="#1-présentation">Présentation</a></li>
+<li><a href="#2-installation">Installation</a></li>
+<li><a href="#3-prérequis">Prérequis</a></li>
+<li><a href="#4-démarrage-rapide">Démarrage rapide</a></li>
+<li><a href="#5-guide-détaillé-de-linterface">Guide détaillé de
+l’interface</a>
+<ul>
+<li><a href="#51-connexion">5.1 Connexion</a></li>
+<li><a href="#52-sélection-des-pistes">5.2 Sélection des pistes</a></li>
+<li><a href="#53-aperçu">5.3 Aperçu</a></li>
+<li><a href="#54-renommage-en-cours">5.4 Renommage en cours</a></li>
+<li><a href="#55-résultats">5.5 Résultats</a></li>
+</ul></li>
+<li><a href="#6-convention-de-nommage">Convention de nommage</a></li>
+<li><a href="#7-importer-des-marqueurs">Importer des marqueurs</a></li>
+<li><a href="#8-exporter-les-clips">Exporter les clips</a></li>
+<li><a href="#9-ligne-de-commande-cli">Ligne de commande (CLI)</a></li>
+<li><a href="#10-dépannage-et-faq">Dépannage et FAQ</a></li>
+<li><a href="#11-informations-techniques">Informations
+techniques</a></li>
+</ol>
+<hr />
+<h2 id="présentation">1. Présentation</h2>
+<p>MAREC est un outil macOS conçu pour Audi’Art qui automatise le
+renommage des clips dans Pro Tools en se basant sur les marqueurs de la
+session. Une tâche qui prenait environ deux heures par semaine —
+renommer manuellement chaque clip pour refléter sa position par rapport
+aux marqueurs — s’effectue désormais en quelques secondes.</p>
+<p><strong>Convention de nommage.</strong> MAREC renomme chaque clip
+selon le format <code>NomPiste - NomMarqueur</code>. Lorsque plusieurs
+clips se trouvent sous le même marqueur sur la même piste, un suffixe
+numéroté est ajouté : <code>_01</code>, <code>_02</code>, etc. Les clips
+situés avant le premier marqueur de la session sont ignorés.</p>
+<p><strong>Idempotence.</strong> Vous pouvez relancer MAREC autant de
+fois que vous le souhaitez sur la même session : les clips déjà
+correctement nommés ne seront pas modifiés. L’opération est donc sans
+risque.</p>
+<p><strong>Fonctionnalités principales :</strong></p>
+<ul>
+<li>Connexion automatique à Pro Tools via le protocole PTSL</li>
+<li>Sélection des pistes à traiter (avec recherche et filtrage)</li>
+<li>Aperçu complet des actions de renommage avant exécution</li>
+<li>Renommage des clips dans Pro Tools (métadonnées de session)</li>
+<li>Renommage optionnel des fichiers audio source sur disque</li>
+<li>Import de marqueurs depuis un export texte d’une autre session</li>
+<li>Export des clips renommés au format WAV 24-bit 48 kHz</li>
+<li>Mode ligne de commande pour l’automatisation et le scripting</li>
+</ul>
+<hr />
+<h2 id="installation">2. Installation</h2>
+<h3 id="configuration-requise">Configuration requise</h3>
+<ul>
+<li>macOS 15 (Sequoia) ou version ultérieure</li>
+<li>Pro Tools avec le protocole PTSL activé (Pro Tools standard ou
+Ultimate)</li>
+</ul>
+<h3 id="installation-depuis-le-.pkg">Installation depuis le .pkg</h3>
+<ol type="1">
+<li>Double-cliquez sur le fichier <code>MAREC.pkg</code>
+téléchargé.</li>
+<li>Suivez les instructions de l’installeur.</li>
+<li>MAREC s’installe dans le dossier <code>/Applications</code>.</li>
+<li>Ouvrez MAREC depuis le Launchpad ou le dossier Applications.</li>
+</ol>
+<blockquote>
+<p><strong>💡 Astuce</strong> — Glissez l’icône MAREC dans votre Dock
+pour y accéder rapidement.</p>
+</blockquote>
+<h3 id="désinstallation">Désinstallation</h3>
+<p>Faites glisser MAREC depuis le dossier Applications vers la
+Corbeille. Pour supprimer également les fichiers de logs, supprimez le
+dossier <code>~/Library/Logs/MAREC/</code>.</p>
+<hr />
+<h2 id="prérequis">3. Prérequis</h2>
+<blockquote>
+<p><strong>⚠️ Attention</strong> — Pro Tools doit être lancé avec une
+session ouverte <em>avant</em> de démarrer MAREC. MAREC ne peut pas
+ouvrir Pro Tools ni ouvrir une session à votre place.</p>
+</blockquote>
+<h3 id="marqueurs">Marqueurs</h3>
+<p>Les marqueurs de la session définissent les noms qui seront attribués
+aux clips. Ils doivent être placés dans la timeline <em>avant</em> les
+clips que vous souhaitez nommer. Les clips situés avant le premier
+marqueur seront ignorés.</p>
+<blockquote>
+<p><strong>ℹ️ Note</strong> — Si votre session ne contient pas de
+marqueurs, vous pouvez les importer depuis un fichier d’export texte
+d’une autre session. Consultez la <a href="#7-importer-des-marqueurs">section 7 — Importer des
+marqueurs</a>.</p>
+</blockquote>
+<h3 id="api-privée-optionnel">API Privée (optionnel)</h3>
+<p>MAREC fonctionne en mode standard (API publique), mais offre de
+meilleures performances avec l’API Privée de Pro Tools. Pour l’activer
+:</p>
+<ol type="1">
+<li>Dans Pro Tools, ouvrez <strong>Setup → Preferences</strong>.</li>
+<li>Onglet <strong>Operation</strong>.</li>
+<li>Cochez <strong>Enable Private API</strong>.</li>
+<li>Redémarrez Pro Tools.</li>
+</ol>
+<p>MAREC détecte automatiquement la disponibilité de l’API Privée et
+l’utilise si elle est activée. Aucune configuration supplémentaire n’est
+nécessaire.</p>
+<hr />
+<h2 id="démarrage-rapide">4. Démarrage rapide</h2>
+<p>MAREC fonctionne en 5 étapes séquentielles :</p>
+<pre><code>Connexion → Sélection des pistes → Aperçu → Renommage → Résultats</code></pre>
+<h3 id="procédure-express">Procédure express</h3>
+<ol type="1">
+<li>Lancez Pro Tools et ouvrez votre session.</li>
+<li>Lancez MAREC.</li>
+<li>Cliquez sur <strong>“Connecter”</strong> — MAREC se connecte à Pro
+Tools.</li>
+<li>Sélectionnez les pistes audio à traiter (ou utilisez <strong>“Tout
+selectionner”</strong>).</li>
+<li>Cliquez sur <strong>“Apercu”</strong> — MAREC analyse les clips et
+les marqueurs.</li>
+<li>Vérifiez le tableau d’aperçu : le nom actuel (en rouge) et le
+nouveau nom (en vert).</li>
+<li>Cliquez sur <strong>“Renommer N clip(s)”</strong> pour
+confirmer.</li>
+<li>Consultez le résumé des résultats.</li>
+</ol>
+<blockquote>
+<p><strong>💡 Astuce</strong> — L’aperçu vous permet de vérifier chaque
+action avant de confirmer le renommage. Aucune modification n’est
+effectuée tant que vous n’avez pas cliqué sur le bouton de
+renommage.</p>
+</blockquote>
+<hr />
+<h2 id="guide-détaillé-de-linterface">5. Guide détaillé de
+l’interface</h2>
+<h3 id="connexion">5.1 Connexion</h3>
+<p>L’écran de connexion est le point d’entrée de MAREC. Il affiche le
+message <em>“Connexion a Pro Tools”</em> et vous invite à vous assurer
+que Pro Tools est ouvert avec une session active.</p>
+<p><strong>Bouton “Connecter”</strong> — Lance la connexion vers Pro
+Tools via le protocole PTSL sur <code>localhost:31416</code>. Pendant la
+connexion, le bouton affiche <em>“Connexion…”</em> avec un indicateur
+d’activité.</p>
+<p><strong>Bouton “Importer Marqueurs”</strong> — Ouvre un sélecteur de
+fichier pour importer des marqueurs depuis un export texte Pro Tools. Ce
+bouton est disponible à tout moment, même avant la connexion. Consultez
+la <a href="#7-importer-des-marqueurs">section 7</a> pour les
+détails.</p>
+<p>L’encadré d’information en bas de l’écran rappelle que <em>“MAREC se
+connecte via PTSL (localhost:31416)”</em> et que <em>“Pro Tools doit
+etre lance avant de connecter.”</em></p>
+<p><strong>Erreurs possibles :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pro Tools n’est pas lancé</td>
+<td>Erreur de connexion PTSL</td>
+</tr>
+<tr>
+<td>Aucune session ouverte</td>
+<td>Erreur de connexion ou session introuvable</td>
+</tr>
+</tbody>
+</table>
+<p>En cas d’erreur, un bandeau rouge s’affiche sous les boutons avec le
+détail du problème.</p>
+<hr />
+<h3 id="sélection-des-pistes">5.2 Sélection des pistes</h3>
+<p>Après connexion, MAREC affiche la liste des pistes audio de la
+session.</p>
+<p><strong>Barre d’information de session</strong> — En haut de l’écran,
+trois indicateurs affichent : - La fréquence d’échantillonnage (ex.
+<code>48000 Hz</code>) - Le nombre de marqueurs détectés (ex.
+<code>12 marqueur(s)</code>) - Le nombre de pistes audio (ex.
+<code>8 piste(s)</code>)</p>
+<p><strong>Liste des pistes</strong> — Chaque piste est affichée avec
+une case à cocher. Cliquez sur une piste pour la sélectionner ou la
+désélectionner. Le titre de section est <em>“Pistes audio”</em>.</p>
+<p><strong>Recherche</strong> — Lorsque la session contient plus de 10
+pistes, un champ de recherche <em>“Filtrer les pistes…”</em> apparaît
+pour trouver rapidement une piste par son nom.</p>
+<p><strong>Sélection groupée</strong> — Le lien <strong>“Tout
+selectionner”</strong> / <strong>“Tout deselectionner”</strong> en haut
+à droite permet de basculer la sélection de toutes les pistes.</p>
+<p><strong>Panneau “Marqueurs detectes”</strong> — Un panneau dépliable
+affiche la liste des marqueurs de la session. Cliquez dessus pour le
+développer et voir chaque marqueur avec son numéro, son nom et son
+timecode. Lorsqu’il est replié, les premiers marqueurs sont affichés
+sous forme de pastilles.</p>
+<p><strong>Compteur</strong> — En bas à gauche, le compteur <em>“N
+piste(s)”</em> indique le nombre de pistes actuellement
+sélectionnées.</p>
+<p><strong>Navigation :</strong> - <strong>“Retour”</strong> — Revenir à
+l’écran de connexion. - <strong>“Apercu”</strong> — Lancer l’analyse des
+clips pour les pistes sélectionnées. Ce bouton est désactivé si aucune
+piste n’est sélectionnée.</p>
+<hr />
+<h3 id="aperçu">5.3 Aperçu</h3>
+<p>L’écran d’aperçu présente un résumé complet des actions de renommage
+avant exécution.</p>
+<p><strong>Barre de résumé</strong> — Quatre cartes affichent les
+compteurs : - <strong>Total clips</strong> — Nombre total de clips
+analysés - <strong>A renommer</strong> — Clips qui seront renommés (en
+orange) - <strong>Deja corrects</strong> — Clips dont le nom correspond
+déjà au marqueur (en vert) - <strong>Ignores (avant 1er
+marqueur)</strong> — Clips situés avant le premier marqueur (affiché
+uniquement si &gt; 0)</p>
+<p><strong>Tableau des actions</strong> — Sous le titre <em>“Actions de
+renommage”</em>, un tableau détaille chaque action avec les colonnes
+:</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Piste</strong></td>
+<td>Nom de la piste audio</td>
+</tr>
+<tr>
+<td><strong>Nom actuel</strong></td>
+<td>Nom actuel du clip (affiché en rouge)</td>
+</tr>
+<tr>
+<td>→</td>
+<td>Flèche de transformation</td>
+</tr>
+<tr>
+<td><strong>Nouveau nom</strong></td>
+<td>Nom après renommage (affiché en vert)</td>
+</tr>
+<tr>
+<td><strong>Position</strong></td>
+<td>Position du clip dans la timeline</td>
+</tr>
+</tbody>
+</table>
+<p>Lorsque plusieurs pistes sont sélectionnées, les actions sont
+regroupées par piste dans des sections dépliables. Chaque section
+indique le nombre d’actions à renommer et le nombre de clips déjà
+corrects.</p>
+<p><strong>Recherche et filtrage</strong> — Si le nombre d’actions
+dépasse 10, un champ <em>“Rechercher un clip…”</em> et un bouton filtre
+<strong>“A renommer”</strong> apparaissent pour affiner l’affichage.</p>
+<p><strong>Si tous les clips sont déjà correctement nommés</strong>,
+l’écran affiche <em>“Aucun clip a renommer”</em> avec le message
+<em>“Tous les clips sont deja correctement nommes.”</em></p>
+<p><strong>Options</strong> — Deux cases à cocher sont disponibles : - ☐
+<strong>“Renommer aussi les fichiers audio”</strong> — Renomme également
+les fichiers audio source sur le disque dur, et pas seulement les clips
+dans la session Pro Tools. - ☐ <strong>“Exporter apres
+renommage”</strong> — Lance automatiquement l’export des clips après le
+renommage.</p>
+<blockquote>
+<p><strong>⚠️ Attention</strong> — L’option <em>“Renommer aussi les
+fichiers audio”</em> modifie les fichiers sur le disque. Les autres
+sessions Pro Tools qui référencent ces fichiers verront également le
+changement de nom.</p>
+</blockquote>
+<p><strong>Bouton “Renommer N clip(s)”</strong> — Lance l’exécution du
+renommage. Le nombre N correspond au nombre total d’actions.</p>
+<p><strong>Bouton “Retour”</strong> — Revenir à la sélection des
+pistes.</p>
+<hr />
+<h3 id="renommage-en-cours">5.4 Renommage en cours</h3>
+<p>L’écran d’exécution affiche une animation pendant le renommage des
+clips.</p>
+<p>Le titre <em>“Renommage en cours…”</em> est affiché avec un
+indicateur visuel animé. Sous le titre, la progression en temps réel
+indique la piste en cours de traitement (ex.
+<code>2/5 Track 1</code>).</p>
+<p>Le message <em>“Ne fermez pas Pro Tools pendant l’operation.”</em>
+rappelle de ne pas interrompre le processus.</p>
+<blockquote>
+<p><strong>⚠️ Attention</strong> — Ne fermez ni Pro Tools ni MAREC
+pendant le renommage. Une interruption pourrait laisser certains clips
+partiellement renommés.</p>
+</blockquote>
+<hr />
+<h3 id="résultats">5.5 Résultats</h3>
+<p>L’écran de résultats affiche un résumé chiffré de l’opération.</p>
+<p><strong>Résumé</strong> — Quatre indicateurs : -
+<strong>Renommes</strong> (en vert) — Nombre de clips renommés avec
+succès - <strong>Erreurs</strong> (en rouge) — Nombre de clips en erreur
+- <strong>Total</strong> — Nombre total de clips traités -
+<strong>Succes</strong> ou <strong>Partiel</strong> — Statut global de
+l’opération</p>
+<p><strong>Section “Erreurs”</strong> — Si des erreurs sont survenues,
+cette section est dépliée par défaut et liste chaque clip en erreur avec
+le détail de l’erreur. Chaque ligne affiche l’ancien nom, le nouveau nom
+prévu, et le message d’erreur.</p>
+<p><strong>Section “Renommes avec succes”</strong> — Liste les clips
+renommés avec succès. Si la liste dépasse 10 éléments, un champ
+<em>“Rechercher un clip…”</em> permet de filtrer les résultats.</p>
+<p><strong>Section “Export”</strong> — Si l’export a été activé, cette
+section affiche le statut de l’export pour chaque piste avec un
+indicateur <strong>OK</strong> ou <strong>Erreur</strong>.</p>
+<p><strong>Boutons :</strong> - <strong>“Nouvelle session”</strong> —
+Réinitialise MAREC pour travailler sur une autre session (ou la même
+après modifications). - <strong>“Exporter les clips”</strong> — Lance
+l’export des clips renommés (affiché uniquement si l’export n’a pas déjà
+été effectué).</p>
+<hr />
+<h2 id="convention-de-nommage">6. Convention de nommage</h2>
+<p>MAREC applique la convention suivante pour nommer les clips :</p>
+<pre><code>NomPiste - NomMarqueur</code></pre>
+<p><strong>Exemple :</strong> Un clip sur la piste <em>“Voix”</em> situé
+après le marqueur <em>“Scène 3”</em> sera renommé
+<code>Voix - Scène 3</code>.</p>
+<h3 id="suffixes-de-duplication">Suffixes de duplication</h3>
+<p>Lorsque plusieurs clips se trouvent sous le même marqueur sur la même
+piste, un suffixe numéroté est ajouté à partir du deuxième clip :</p>
+<table>
+<thead>
+<tr>
+<th>Clip</th>
+<th>Nom attribué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1er clip</td>
+<td><code>Voix - Scène 3</code></td>
+</tr>
+<tr>
+<td>2e clip</td>
+<td><code>Voix - Scène 3_01</code></td>
+</tr>
+<tr>
+<td>3e clip</td>
+<td><code>Voix - Scène 3_02</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="clips-avant-le-premier-marqueur">Clips avant le premier
+marqueur</h3>
+<p>Les clips situés avant le premier marqueur de la session sont ignorés
+par MAREC. Ils ne sont ni renommés ni comptabilisés dans les actions de
+renommage — ils apparaissent dans le compteur <em>“Ignores (avant 1er
+marqueur)”</em> de l’aperçu.</p>
+<h3 id="idempotence">Idempotence</h3>
+<p>Si un clip porte déjà le nom correct (exactement
+<code>NomPiste - NomMarqueur</code> ou avec un suffixe
+<code>_NN</code>), il n’est pas modifié. Cela signifie que vous pouvez
+relancer MAREC sur la même session sans risque de double renommage.</p>
+<h3 id="stéréo">Stéréo</h3>
+<p>Les canaux gauche (L) et droit (R) d’un clip stéréo sont comptés
+comme un seul clip. MAREC déduplique automatiquement les canaux pour
+éviter les doublons.</p>
+<hr />
+<h2 id="importer-des-marqueurs">7. Importer des marqueurs</h2>
+<p>L’import de marqueurs est utile lorsque votre session de travail ne
+contient pas de marqueurs, ou lorsque vous souhaitez récupérer les
+marqueurs d’une autre session (par exemple, la session de tournage vers
+la session de mix).</p>
+<h3 id="étape-1-générer-le-fichier-dexport-dans-pro-tools">Étape 1 :
+Générer le fichier d’export dans Pro Tools</h3>
+<ol type="1">
+<li>Ouvrez la session source (celle qui contient les marqueurs) dans Pro
+Tools.</li>
+<li>Allez dans <strong>File → Export → Session Info as
+Text…</strong></li>
+<li>Vérifiez que l’option <strong>Include Markers</strong> est
+active.</li>
+<li>Choisissez un emplacement et cliquez sur <strong>OK</strong>.</li>
+<li>Le fichier généré est un fichier <code>.txt</code> contenant les
+informations de la session.</li>
+</ol>
+<blockquote>
+<p><strong>ℹ️ Note</strong> — Le format attendu est un fichier texte
+contenant une section <code>M A R K E R S  L I S T I N G</code>. MAREC
+ignore les autres sections du fichier.</p>
+</blockquote>
+<h3 id="étape-2-importer-dans-marec">Étape 2 : Importer dans MAREC</h3>
+<ol type="1">
+<li>Lancez MAREC.</li>
+<li>Sur l’écran de connexion, cliquez sur <strong>“Importer
+Marqueurs”</strong>.</li>
+<li>Sélectionnez le fichier <code>.txt</code> exporté depuis Pro
+Tools.</li>
+<li>MAREC affiche un aperçu de l’import dans la fenêtre
+<strong>“Importer des Marqueurs”</strong>.</li>
+<li>Vérifiez le résumé : session source, fréquence d’échantillonnage, et
+compteurs.</li>
+<li>Cliquez sur <strong>“Importer”</strong> pour créer les marqueurs
+dans la session active.</li>
+</ol>
+<h3 id="aperçu-de-limport">Aperçu de l’import</h3>
+<p>L’aperçu affiche les informations suivantes : -
+<strong>Source</strong> — Nom de la session d’origine et fréquence
+d’échantillonnage - <strong>Dans le fichier</strong> — Nombre total de
+marqueurs trouvés dans le fichier - <strong>A creer</strong> — Nombre de
+marqueurs qui seront créés (en vert) - <strong>Existants</strong> —
+Nombre de marqueurs déjà présents dans la session (en orange)</p>
+<h3 id="option-supprimer-les-marqueurs-existants">Option “Supprimer les
+marqueurs existants”</h3>
+<blockquote>
+<p><strong>⚠️ Attention</strong> — Cette option supprime tous les
+marqueurs existants de la session avant l’import. Cette action est
+irréversible dans MAREC (mais annulable via Cmd+Z dans Pro Tools
+immédiatement après).</p>
+</blockquote>
+<p>Activez cette option si vous souhaitez remplacer intégralement les
+marqueurs de la session par ceux du fichier importé.</p>
+<h3 id="résultat-de-limport">Résultat de l’import</h3>
+<p>Après l’import, MAREC affiche le message <em>“Import termine”</em>
+avec les compteurs : - <strong>Crees</strong> — Marqueurs créés avec
+succès - <strong>Ignores</strong> — Marqueurs ignorés (doublons) -
+<strong>Erreurs</strong> — Marqueurs en erreur (le cas échéant) -
+<strong>Supprimes</strong> — Marqueurs supprimés (si l’option était
+activée)</p>
+<blockquote>
+<p><strong>💡 Astuce</strong> — Les marqueurs dont le numéro existe déjà
+dans la session sont automatiquement ignorés pour éviter les
+doublons.</p>
+</blockquote>
+<hr />
+<h2 id="exporter-les-clips">8. Exporter les clips</h2>
+<p>MAREC peut exporter les clips renommés sous forme de fichiers audio
+individuels.</p>
+<h3 id="deux-façons-dexporter">Deux façons d’exporter</h3>
+<ol type="1">
+<li><strong>À l’aperçu</strong> — Cochez l’option <strong>“Exporter
+apres renommage”</strong> avant de lancer le renommage. L’export
+s’effectue automatiquement après le renommage.</li>
+<li><strong>Aux résultats</strong> — Cliquez sur le bouton
+<strong>“Exporter les clips”</strong> sur l’écran de résultats.</li>
+</ol>
+<h3 id="format-dexport">Format d’export</h3>
+<p>Les fichiers sont exportés au format fixe <strong>WAV 24-bit 48
+kHz</strong>. Ce format garantit une qualité professionnelle compatible
+avec tous les workflows de post-production.</p>
+<h3 id="destination">Destination</h3>
+<p>Par défaut, les fichiers sont exportés dans le sous-dossier
+<code>Bounced Files/</code> du dossier de la session Pro Tools.</p>
+<blockquote>
+<p><strong>ℹ️ Note</strong> — Pro Tools ne peut pas exporter vers
+certains répertoires système comme <code>/tmp/</code>. Utilisez le
+dossier de session ou un dossier dans votre répertoire utilisateur.</p>
+</blockquote>
+<hr />
+<h2 id="ligne-de-commande-cli">9. Ligne de commande (CLI)</h2>
+<p>MAREC dispose d’un mode ligne de commande qui offre les mêmes
+fonctionnalités que l’interface graphique. Le CLI est utile pour
+l’automatisation et le scripting.</p>
+<h3 id="mode-interactif">Mode interactif</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marec</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Aperçu du renommage sans exécution</td>
+</tr>
+<tr>
+<td><code>--all-tracks</code></td>
+<td>Traiter toutes les pistes audio (sans sélection interactive)</td>
+</tr>
+<tr>
+<td><code>--rename-file</code></td>
+<td>Renommer aussi les fichiers audio source sur disque</td>
+</tr>
+<tr>
+<td><code>--export</code></td>
+<td>Exporter les clips après renommage</td>
+</tr>
+<tr>
+<td><code>--output-dir CHEMIN</code></td>
+<td>Dossier de destination pour l’export (défaut : dossier de la
+session)</td>
+</tr>
+<tr>
+<td><code>--format FORMAT</code></td>
+<td>Format d’export : <code>wav</code> ou <code>aiff</code> (défaut :
+<code>wav</code>)</td>
+</tr>
+<tr>
+<td><code>--bit-depth PROFONDEUR</code></td>
+<td>Profondeur de bits : <code>16</code>, <code>24</code> ou
+<code>32</code> (défaut : <code>24</code>)</td>
+</tr>
+<tr>
+<td><code>--help</code>, <code>-h</code></td>
+<td>Afficher l’aide</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple :</strong> Aperçu du renommage de toutes les pistes
+sans exécution :</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marec</span> <span class="at">--dry-run</span> <span class="at">--all-tracks</span></span></code></pre></div>
+<h3 id="import-de-marqueurs">Import de marqueurs</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marec</span> <span class="at">--import-markers</span> fichier.txt <span class="pp">[--</span><span class="ss">clear</span><span class="pp">-</span><span class="ss">markers</span><span class="pp">]</span> <span class="pp">[--</span><span class="ss">dry</span><span class="pp">-</span><span class="ss">run</span><span class="pp">]</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--import-markers FICHIER</code></td>
+<td>Importer les marqueurs depuis un fichier d’export texte Pro
+Tools</td>
+</tr>
+<tr>
+<td><code>--clear-markers</code></td>
+<td>Supprimer tous les marqueurs existants avant l’import</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Aperçu de l’import sans créer les marqueurs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple :</strong> Importer des marqueurs en supprimant les
+existants :</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marec</span> <span class="at">--import-markers</span> session_tournage.txt <span class="at">--clear-markers</span></span></code></pre></div>
+<h3 id="mode-json">Mode JSON</h3>
+<p>Le mode JSON (<code>--json --step &lt;étape&gt;</code>) est utilisé
+par l’interface graphique pour communiquer avec le moteur C++. Il
+retourne des réponses JSON structurées pour chaque étape. Ce mode est
+principalement destiné à l’intégration et au développement.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marec</span> <span class="at">--json</span> <span class="at">--step</span> preview <span class="at">--tracks</span> <span class="st">&quot;Voix,Ambiance&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="dépannage-et-faq">10. Dépannage et FAQ</h2>
+<h3 id="problèmes-courants">Problèmes courants</h3>
+<h4 id="connexion-échouée">1. Connexion échouée</h4>
+<p><strong>Cause :</strong> Pro Tools n’est pas lancé, aucune session
+n’est ouverte, ou le protocole PTSL n’est pas disponible.</p>
+<p><strong>Solution :</strong> - Vérifiez que Pro Tools est lancé et
+qu’une session est ouverte. - Vérifiez que vous utilisez Pro Tools
+standard ou Ultimate (Pro Tools First ne supporte pas le PTSL). -
+Redémarrez Pro Tools si le problème persiste.</p>
+<h4 id="aucun-marqueur-trouvé">2. Aucun marqueur trouvé</h4>
+<p><strong>Cause :</strong> La session ne contient pas de marqueurs
+(Memory Locations de type Marker).</p>
+<p><strong>Solution :</strong> - Créez des marqueurs dans Pro Tools
+(Entrée → Marqueurs ou raccourci clavier). - Importez des marqueurs
+depuis un fichier d’export texte (voir <a href="#7-importer-des-marqueurs">section 7</a>). - Vérifiez que vos
+Memory Locations sont bien de type <em>Marker</em> et non
+<em>Selection</em> ou <em>None</em>.</p>
+<h4 id="aucun-clip-à-renommer">3. Aucun clip à renommer</h4>
+<p><strong>Cause :</strong> Tous les clips sont déjà correctement nommés
+(idempotence).</p>
+<p><strong>Solution :</strong> C’est un comportement normal si MAREC a
+déjà été exécuté sur cette session. Si vous avez ajouté de nouveaux
+clips, vérifiez qu’ils se trouvent après le premier marqueur.</p>
+<h4 id="clips-ignorés-avant-le-premier-marqueur">4. Clips ignorés (avant
+le premier marqueur)</h4>
+<p><strong>Cause :</strong> Certains clips commencent avant la position
+du premier marqueur dans la timeline.</p>
+<p><strong>Solution :</strong> - Ajoutez un marqueur avant ces clips si
+vous souhaitez les inclure dans le renommage. - Déplacez les clips après
+le premier marqueur existant.</p>
+<h4 id="erreurs-partielles-lors-du-renommage">5. Erreurs partielles lors
+du renommage</h4>
+<p><strong>Cause :</strong> Certains clips n’ont pas pu être renommés
+(conflit de nom, fichier verrouillé, etc.).</p>
+<p><strong>Solution :</strong> - Consultez la section <em>“Erreurs”</em>
+dans l’écran de résultats pour le détail de chaque erreur. - Vérifiez
+les fichiers de logs pour plus d’informations (voir ci-dessous). -
+Corrigez le problème dans Pro Tools et relancez MAREC — les clips déjà
+renommés ne seront pas retouchés.</p>
+<h4 id="binaire-introuvable-gui">6. Binaire introuvable (GUI)</h4>
+<p><strong>Cause :</strong> L’interface graphique ne trouve pas
+l’exécutable CLI <code>marec</code>.</p>
+<p><strong>Solution :</strong> - Réinstallez MAREC depuis le .pkg. -
+Vérifiez que l’application n’a pas été déplacée en dehors du dossier
+Applications.</p>
+<h4 id="lexport-échoue">7. L’export échoue</h4>
+<p><strong>Cause :</strong> Pro Tools ne peut pas écrire dans le dossier
+de destination.</p>
+<p><strong>Solution :</strong> - Vérifiez que le dossier
+<code>Bounced Files/</code> existe dans le dossier de la session. -
+N’utilisez pas de dossiers système comme <code>/tmp/</code> comme
+destination. - Vérifiez les permissions d’écriture sur le dossier de
+destination.</p>
+<h3 id="fichier-de-logs">Fichier de logs</h3>
+<p>MAREC enregistre ses opérations dans un fichier de log :</p>
+<pre><code>~/Library/Logs/MAREC/marec.log</code></pre>
+<p>Pour consulter les logs en temps réel, ouvrez
+<strong>Console.app</strong> et filtrez par le sous-système
+<code>com.audiart.marec</code>. Vous pouvez aussi utiliser le terminal
+:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> ~/Library/Logs/MAREC/marec.log</span></code></pre></div>
+<p>Le fichier de log contient les invocations CLI, les réponses de Pro
+Tools, les transitions d’étapes, et les éventuelles erreurs
+détaillées.</p>
+<h3 id="faq">FAQ</h3>
+<h4 id="marec-modifie-t-il-le-contenu-audio-des-fichiers">MAREC
+modifie-t-il le contenu audio des fichiers ?</h4>
+<p>Non. Par défaut, MAREC modifie uniquement les métadonnées de la
+session Pro Tools (le nom des clips). Le contenu audio n’est jamais
+altéré. Si vous activez l’option <em>“Renommer aussi les fichiers
+audio”</em>, seul le nom des fichiers sur disque est modifié — le
+contenu audio reste identique.</p>
+<h4 id="puis-je-annuler-un-renommage">Puis-je annuler un renommage
+?</h4>
+<p>Oui. Utilisez <strong>Cmd+Z</strong> (Annuler) dans Pro Tools
+immédiatement après le renommage. Pro Tools enregistre le renommage dans
+son historique d’annulation comme n’importe quelle autre opération.</p>
+<h4 id="puis-je-relancer-marec-sur-la-même-session">Puis-je relancer
+MAREC sur la même session ?</h4>
+<p>Oui, c’est sans risque. MAREC est idempotent : les clips déjà
+correctement nommés sont automatiquement ignorés. Seuls les clips dont
+le nom ne correspond pas au marqueur sont renommés.</p>
+<h4 id="pro-tools-first-est-il-compatible">Pro Tools First est-il
+compatible ?</h4>
+<p>Non. Pro Tools First ne supporte pas le protocole PTSL (Pro Tools
+Scripting Language), qui est nécessaire pour la communication avec
+MAREC. Vous avez besoin de Pro Tools standard ou Ultimate.</p>
+<h4 id="quelle-est-la-différence-entre-renommer-un-clip-et-renommer-un-fichier-audio">Quelle
+est la différence entre renommer un clip et renommer un fichier audio
+?</h4>
+<ul>
+<li><strong>Clip</strong> : Nom de la référence dans la session Pro
+Tools. Le renommage modifie uniquement la session (fichier
+<code>.ptx</code>). D’autres sessions utilisant le même fichier audio ne
+sont pas affectées.</li>
+<li><strong>Fichier audio</strong> : Nom du fichier <code>.wav</code> ou
+<code>.aiff</code> sur le disque dur. Si vous activez l’option
+<em>“Renommer aussi les fichiers audio”</em>, le fichier physique est
+renommé. Toutes les sessions qui référencent ce fichier verront le
+changement.</li>
+</ul>
+<h4 id="quest-ce-que-lapi-privée">Qu’est-ce que l’API Privée ?</h4>
+<p>L’API Privée de Pro Tools est une interface avancée qui permet à
+MAREC de récupérer directement les éléments de playlist de chaque piste.
+Sans l’API Privée, MAREC utilise une méthode alternative (sélection et
+lecture des identifiants de fichiers) qui est fonctionnellement
+équivalente mais légèrement plus lente. L’API Privée est optionnelle —
+MAREC fonctionne parfaitement sans elle.</p>
+<hr />
+<h2 id="informations-techniques">11. Informations techniques</h2>
+<h3 id="architecture">Architecture</h3>
+<p>MAREC est composé de deux couches : - <strong>Interface
+graphique</strong> — Application SwiftUI native pour macOS, suivant le
+pattern MVVM (Model-View-ViewModel). - <strong>Moteur C++17</strong> —
+Exécutable en ligne de commande qui communique avec Pro Tools via le
+protocole PTSL/gRPC sur <code>localhost:31416</code>.</p>
+<p>L’interface graphique pilote le moteur C++ en le lançant comme
+sous-processus pour chaque étape du workflow. La communication
+s’effectue en JSON structuré.</p>
+<h3 id="algorithme-de-correspondance">Algorithme de correspondance</h3>
+<p>Pour chaque clip, MAREC utilise une recherche binaire
+(<code>std::upper_bound</code>) sur les positions des marqueurs pour
+trouver le marqueur dont la position est immédiatement inférieure ou
+égale à la position de début du clip dans la timeline. Cette approche
+garantit une complexité en O(log n) par clip, quelle que soit le nombre
+de marqueurs.</p>
+<p>La déduplication des canaux stéréo (L/R) s’effectue par paire
+<code>(nomClip, positionEnSamples)</code>. La déduplication cross-track
+(un même clip référencé par plusieurs pistes) est assurée par un
+ensemble de clips déjà traités.</p>
+<h3 id="formats-supportés">Formats supportés</h3>
+<ul>
+<li><strong>Import</strong> : Fichiers texte <code>.txt</code> générés
+par l’export Session Info de Pro Tools</li>
+<li><strong>Export</strong> : WAV 24-bit 48 kHz (format fixe)</li>
+</ul>
+<h3 id="connexion-ptsl">Connexion PTSL</h3>
+<p>MAREC s’enregistre auprès de Pro Tools sous le nom d’application
+<code>&quot;MAREC&quot;</code> et le nom de société <code>&quot;AudiArt&quot;</code>. La
+connexion utilise le port <code>31416</code> en local uniquement —
+aucune donnée ne transite par le réseau.</p>
+</body>
+</html>

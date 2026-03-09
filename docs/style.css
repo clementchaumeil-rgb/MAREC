@@ -1,0 +1,261 @@
+/* MAREC User Guide — Print-optimized PDF stylesheet */
+
+@page {
+    size: A4;
+    margin: 25mm 20mm 25mm 20mm;
+
+    @bottom-center {
+        content: counter(page);
+        font-family: "SF Pro Text", "Helvetica Neue", sans-serif;
+        font-size: 9pt;
+        color: #999;
+    }
+}
+
+@page :first {
+    margin-top: 40mm;
+}
+
+:root {
+    --accent: #4A90D9;
+    --accent-light: #EBF2FA;
+    --text: #1a1a1a;
+    --text-secondary: #555;
+    --text-tertiary: #888;
+    --border: #ddd;
+    --bg-code: #f5f5f5;
+    --bg-callout-warn: #FFF8E1;
+    --bg-callout-info: #E8F4FD;
+    --bg-callout-tip: #E8F5E9;
+    --border-warn: #F9A825;
+    --border-info: #4A90D9;
+    --border-tip: #43A047;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "SF Pro Text", "Helvetica Neue", -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 100%;
+    orphans: 3;
+    widows: 3;
+}
+
+/* Title */
+h1 {
+    font-family: "SF Pro Display", "Helvetica Neue", sans-serif;
+    font-size: 28pt;
+    font-weight: 700;
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 12pt;
+    margin-bottom: 6pt;
+    letter-spacing: -0.5px;
+}
+
+/* Subtitle line (Version / Copyright) */
+h1 + p > strong:first-child {
+    font-size: 10pt;
+    color: var(--text-secondary);
+}
+
+h2 {
+    font-family: "SF Pro Display", "Helvetica Neue", sans-serif;
+    font-size: 18pt;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 6pt;
+    margin-top: 28pt;
+    margin-bottom: 12pt;
+    page-break-after: avoid;
+}
+
+h3 {
+    font-size: 13pt;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 20pt;
+    margin-bottom: 8pt;
+    page-break-after: avoid;
+}
+
+h4 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 16pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+}
+
+/* Horizontal rules as section separators */
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24pt 0;
+}
+
+/* Paragraphs */
+p {
+    margin: 6pt 0;
+}
+
+/* Lists */
+ul, ol {
+    margin: 6pt 0;
+    padding-left: 20pt;
+}
+
+li {
+    margin-bottom: 4pt;
+}
+
+li > p {
+    margin: 2pt 0;
+}
+
+/* Bold labels for UI elements */
+strong {
+    font-weight: 600;
+}
+
+/* Inline code */
+code {
+    font-family: "SF Mono", "Menlo", "Monaco", monospace;
+    font-size: 9.5pt;
+    background: var(--bg-code);
+    padding: 1pt 4pt;
+    border-radius: 3pt;
+    border: 0.5px solid #e0e0e0;
+}
+
+/* Code blocks */
+pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 12pt 16pt;
+    border-radius: 6pt;
+    font-family: "SF Mono", "Menlo", monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    margin: 8pt 0;
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0;
+    font-size: 10pt;
+    page-break-inside: avoid;
+}
+
+thead {
+    background: var(--accent-light);
+}
+
+th {
+    font-weight: 600;
+    text-align: left;
+    padding: 8pt 10pt;
+    border-bottom: 2px solid var(--accent);
+    color: var(--text);
+    font-size: 9.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+td {
+    padding: 7pt 10pt;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: top;
+}
+
+tr:nth-child(even) {
+    background: #fafafa;
+}
+
+/* Blockquotes as callouts */
+blockquote {
+    margin: 10pt 0;
+    padding: 10pt 14pt;
+    border-radius: 6pt;
+    border-left: 4px solid var(--border);
+    background: #f8f8f8;
+    page-break-inside: avoid;
+}
+
+blockquote p {
+    margin: 2pt 0;
+    font-size: 10pt;
+}
+
+/* Callout variants based on emoji prefix */
+blockquote p strong:first-child {
+    display: inline;
+}
+
+/* Links */
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Table of contents */
+h2#table-des-matières + ol,
+h2#table-des-matières + ul {
+    columns: 2;
+    column-gap: 24pt;
+}
+
+/* Print-specific */
+@media print {
+    body {
+        font-size: 10pt;
+    }
+
+    h1 {
+        font-size: 24pt;
+    }
+
+    h2 {
+        font-size: 16pt;
+        page-break-before: auto;
+    }
+
+    h3, h4 {
+        page-break-after: avoid;
+    }
+
+    pre, table, blockquote {
+        page-break-inside: avoid;
+    }
+
+    a {
+        color: var(--accent);
+    }
+
+    a[href^="http"]::after {
+        content: none;
+    }
+}
